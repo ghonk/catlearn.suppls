@@ -89,7 +89,49 @@ forward_pass <- function(in_wts, out_wts, inputs, out_rule) {
               ins_w_bias         = ins_w_bias))
 
 }
+# # # generate_state
+# function to construct the state list
+generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL, 
+  wts_center = NULL, num_hids = NULL, learning_rate = NULL, beta_val = NULL,
+  out_rule = NULL, model_seed = NULL) {
 
+  # # # assign default values if needed
+  if (is.null(wts_range))      wts_range     <- 1
+  if (is.null(wts_center))     wts_center    <- 0 
+  if (is.null(num_hids))       num_hids      <- 3
+  if (is.null(learning_rate))  learning_rate <- 0.15
+  if (is.null(beta_val))       beta_val      <- 5
+  if (is.null(out_rule))       out_rule      <- 'sigmoid'
+  if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
+
+  # # # initialize weight matrices
+  wts <- get_wts(num_feats, num_hids, num_cats, wts_range, wts_center)  
+
+  
+  return(st = list(num_feats = num_feats, num_cats = num_cats, colskip = colskip,
+    wts_range = wts_range, wts_center = wts_center, num_hids = num_hids, 
+    learning_rate = learning_rate, beta_val = beta_val, out_rule = out_rule,
+    model_seed = model_seed, in_wts = wts$in_wts, out_wts = wts$out_wts))
+}
+
+# # # generate_tr
+# function to construct a sample training matrix
+generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
+  # # # generate random presentation order
+  prez_order <- as.vector(apply(replicate(blocks, 
+    seq(1, dim(inputs)[1])), 2, sample, dim(inputs)[1]))
+  
+  print(cat_assignment)
+  # # # create input matrix
+  input_mat <- matrix(ncol = 4)
+  for (i in prez_order) {
+    input_mat <- rbind(input_mat, c(inputs[i,], cat_assignment[i]))
+
+  }
+  input_mat <- input_mat[-1,]
+
+  print(cbind(input_mat, stimulus = prez_order))
+}
 # # # get_wts
 # generate net weights
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -204,14 +246,8 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 # run_diva
 # trains vanilla diva
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-run_diva <- function(model) {
+slpDIVA <- function(st, tr) {
   
-  # # # get new seed
-  model.seed <- runif(1) * 100000 * runif(1)
-  set.seed(model.seed)
-  
-  # # # set mean value of weights
-  model$wts_center <- 0 
   # # # convert targets to 0/1
   model$targets <- global_scale(model$inputs) 
   # # # init size parameter variables
