@@ -45,6 +45,38 @@ backprop <- function(out_wts, in_wts, out_activation, current_target,
 
 }
 
+
+# demo_cats
+# loads shj category structures
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+demo_cats <- function(type){
+  
+  in_pattern <- 
+    matrix(c(-1, -1, -1,
+             -1, -1,  1,
+             -1,  1, -1,
+             -1,  1,  1,
+              1, -1, -1,
+              1, -1,  1,
+              1,  1, -1,
+              1,  1,  1), 
+      nrow = 8, ncol = 3, byrow = TRUE)   
+
+  cat_assignment <- 
+    matrix(c(1, 1, 1, 1, 2, 2, 2, 2,  # type I
+             1, 1, 2, 2, 2, 2, 1, 1,  # type II
+             1, 1, 2, 1, 1, 2, 2, 2,  # type III
+             1, 1, 1, 2, 1, 2, 2, 2,  # type IV
+             2, 1, 1, 1, 1, 2, 2, 2,  # type V
+             1, 2, 2, 1, 2, 1, 1, 2,  # type VI
+             1, 1, 2, 2, 3, 3, 4, 4), # type II multiclass  
+      ncol = 8, byrow = TRUE)
+
+return(list(inputs = in_pattern, 
+            labels = cat_assignment[type,]))
+
+}
+
 # # # forward_pass
 # conduct forward pass
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -260,36 +292,6 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 
 }
 
-# shj_cats
-# loads shj category structures
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-demo_cats <- function(type){
-  
-  in_pattern <- 
-    matrix(c(-1, -1, -1,
-	           -1, -1,  1,
-	           -1,  1, -1,
-  	         -1,  1,  1,
-	            1, -1, -1,
-	            1, -1,  1,
-	            1,  1, -1,
-	            1,  1,  1), 
-      nrow = 8, ncol = 3, byrow = TRUE)		
-
-  cat_assignment <- 
-    matrix(c(1, 1, 1, 1, 2, 2, 2, 2,  # type I
-             1, 1, 2, 2, 2, 2, 1, 1,  # type II
-             1, 1, 2, 1, 1, 2, 2, 2,  # type III
-             1, 1, 1, 2, 1, 2, 2, 2,  # type IV
-             2, 1, 1, 1, 1, 2, 2, 2,  # type V
-             1, 2, 2, 1, 2, 1, 1, 2,  # type VI
-             1, 1, 2, 2, 3, 3, 4, 4), # type II multiclass  
-      ncol = 8, byrow = TRUE)
-
-return(list(inputs = in_pattern, 
-			      labels = cat_assignment[type,]))
-
-}
 
 # sigmoid
 # returns sigmoid evaluated elementwize in X
