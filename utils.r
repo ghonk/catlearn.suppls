@@ -209,43 +209,6 @@ get_wts <- function(num_feats, num_hids, num_cats, wts_range, wts_center) {
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 global_scale <- function(x) { x / 2 + 0.5 }
 
-# # # train_plot
-# function to produce line plot of training
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-train_plot <- function(training) {
-  # # # get dimensions
-  n_cats <- dim(training)[2]
-  xrange <- c(1, dim(training)[1])
-  yrange <- range(training)
-
-  # # # open plot device
-  pdf('training_plot.pdf')
-
-  # # # create frame
-  plot(xrange, c(.01, yrange[2]), xlab = 'Block Number', ylab = 'Accuracy')
-
-  # # # aesthetics 
-  colors <- rainbow(n_cats)
-  line_type <- c(1:n_cats)
-  plot_char <- seq(18, 18 + n_cats, 1)
-
-  # # # plot lines
-  for (i in 1:n_cats) {
-    target_cat <- training[,i]
-    lines(seq(1, xrange[2], 1), target_cat, type = 'b', lwd = 1.5, 
-      lty = line_type[i], col = colors[i],  pch = plot_char[i])
-  }
-
-  # # # title and legend
-  title('DIVA Training Accuracy across Blocks')
-  legend('bottomright', y = NULL, 1:n_cats, cex = 0.8, col = colors, 
-    pch = plot_char, lty = line_type, title = 'SHJ Categories')
-
-  # # # produce plot
-  dev.off()
-
-}
-
 # response_rule
 # convert output activations to classification
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -292,14 +255,13 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 
 }
 
-
 # sigmoid
 # returns sigmoid evaluated elementwize in X
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 sigmoid <- function(x) {
   g = 1 / (1 + exp(-x))
 
-return(g)
+  return(g)
 
 }
 
@@ -308,7 +270,7 @@ return(g)
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 sigmoid_grad <- function(x) {
   
-return(g = ((sigmoid(x)) * (1 - sigmoid(x))))
+  return(g = ((sigmoid(x)) * (1 - sigmoid(x))))
 
 }
 

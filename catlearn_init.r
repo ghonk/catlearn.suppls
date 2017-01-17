@@ -28,7 +28,7 @@
 # # # load model functions
 source('utils.r')
 
-# # # load some data, shj type IV
+# # # load some data: shj types 1-6 or 4-class prob (7)
 cases <- demo_cats(6)
   inputs <- cases$inputs
   labels <- cases$labels
