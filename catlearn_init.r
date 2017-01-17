@@ -1,5 +1,9 @@
 # # # CatLearn Example Script
 
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+# # # NEED TO IMPLEMENT CONTINUOUS VS BINOMIAL FEATURE PARAMETER
+# # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS?
+
 # # # load model functions
 source('utils.r')
 
@@ -12,7 +16,7 @@ cases <- demo_cats(4)
 blocks <- 20
 
 # # # construct state list
-st <- generate_state(3, 2, 3)
+st <- generate_state(num_feats = 3, num_cats = 2, colskip = 4)
 
 str(st)
 
@@ -21,6 +25,9 @@ ctrl <- rep(0, blocks * dim(inputs)[1])
 ctrl[1] <- 1
 ctrl <- c(ctrl, rep(2, 8))
 
-# # # stopped at building the tr function
-
+# # # construct the training matrix
 tr <- generate_tr(ctrl, inputs, labels, blocks, st)
+print(tr)
+
+
+out <- slpDIVA(st, tr)

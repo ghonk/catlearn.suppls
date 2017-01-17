@@ -89,6 +89,7 @@ forward_pass <- function(in_wts, out_wts, inputs, out_rule) {
               ins_w_bias         = ins_w_bias))
 
 }
+
 # # # generate_state
 # function to construct the state list
 generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL, 
@@ -117,21 +118,37 @@ generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL,
 # # # generate_tr
 # function to construct a sample training matrix
 generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
+  
+  # # # eg number
+  eg_num <- dim(inputs)[1]
+
   # # # generate random presentation order
   prez_order <- as.vector(apply(replicate(blocks, 
-    seq(1, dim(inputs)[1])), 2, sample, dim(inputs)[1]))
-  
-  print(cat_assignment)
+    seq(1, eg_num)), 2, sample, eg_num))
+  # # # trial number
+  trial_num <- length(prez_order)
+
   # # # create input matrix
-  input_mat <- matrix(ncol = 4)
-  for (i in prez_order) {
-    input_mat <- rbind(input_mat, c(inputs[i,], cat_assignment[i]))
-
+  input_mat <- matrix(ncol = 4,  nrow = trial_num)
+  for (i in 1:trial_num) {
+    input_mat[i,] <- c(inputs[prez_order[i],], cat_assignment[prez_order[i]])
   }
-  input_mat <- input_mat[-1,]
 
-  print(cbind(input_mat, stimulus = prez_order))
+  # # # add trial variables to input matrix
+  input_mat <- cbind(sort(rep(1:blocks, eg_num)), prez_order, input_mat)
+
+  # # # add test phase
+  test_mat <- cbind(0, 1:eg_num, inputs, cat_assignment)
+
+  # # # complete tr matrix
+  train_test_mat <- cbind(ctrl, 1:length(ctrl), rbind(input_mat, test_mat))
+  
+  dimnames(train_test_mat) <- 
+    list(c(), c('ctrl', 'trial', 'block', 'example', 'f1', 'f2', 'f3', 'category'))
+  
+  return(train_test_mat)
 }
+
 # # # get_wts
 # generate net weights
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -243,71 +260,6 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 
 }
 
-# run_diva
-# trains vanilla diva
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-slpDIVA <- function(st, tr) {
-  
-  # # # convert targets to 0/1
-  model$targets <- global_scale(model$inputs) 
-  # # # init size parameter variables
-  model$num_feats   <- ncol(model$inputs)
-  model$num_stims   <- nrow(model$inputs)
-  model$num_cats    <- length(unique(model$labels))
-  model$num_updates <- model$num_blocks * model$num_stims
-  # # # init training accuracy matrix
-  training <- 
-    matrix(rep(NA, model$num_updates * model$num_inits), 
-      nrow = model$num_updates, ncol = model$num_inits)
-  
-  # # # initialize and run DIVA models
-  for (model_num in 1:model$num_inits) {
-    
-    # # # generate weights
-    wts <- get_wts(model$num_feats, model$num_hids, model$num_cats, model$wts_range, model$wts_center)
-    
-    # # # generate random presentation order
-    prez_order <- as.vector(apply(replicate(model$num_blocks, 
-      seq(1, model$num_stims)), 2, sample, model$num_stims))
-
-    # # # iterate over each trial in the presentation order 
-    for (trial_num in 1:model$num_updates) {
-      current_input  <- model$inputs[prez_order[[trial_num]], ]
-      current_target <- model$targets[prez_order[[trial_num]], ]
-      current_class  <- model$labels[prez_order[[trial_num]]] 
-
-      # # # complete forward pass
-      fp <- forward_pass(wts$in_wts, wts$out_wts, current_input, model$out_rule)
-
-      # # # calculate classification probability
-      response <- response_rule(fp$out_activation, current_target, model$beta_val)
-
-      # # # store classification accuracy
-      training[trial_num, model_num] = response$ps[current_class]
-
-      # # # back propagate error to adjust weights
-      class_wts <- wts$out_wts[,,current_class]
-      class_activation <- fp$out_activation[,,current_class]
-
-      adjusted_wts <- backprop(class_wts, wts$in_wts, class_activation, current_target,  
-               fp$hid_activation, fp$hid_activation_raw, fp$ins_w_bias, model$learning_rate)
-
-      # # # set new weights
-      wts$out_wts[,,current_class] <- adjusted_wts$out_wts
-      wts$in_wts <- adjusted_wts$in_wts
-  
-    }
-
-  }
-
-training_means <- 
-  rowMeans(matrix(rowMeans(training), nrow = model$num_blocks, ncol = model$num_stims, byrow = TRUE))
-
-return(list(training = training_means,
-            model    = model))
-
-}
-
 # shj_cats
 # loads shj category structures
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -355,5 +307,63 @@ return(g)
 sigmoid_grad <- function(x) {
   
 return(g = ((sigmoid(x)) * (1 - sigmoid(x))))
+
+}
+
+# slpDIVA
+# trains stateful list processor DIVA
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+slpDIVA <- function(st, tr) {
+  
+  # # # convert targets to 0/1 for binomial input data ONLY
+  targets <- global_scale(tr[,(st$colskip + 1):(st$colskip + st$num_feats)])
+
+  # # # init size parameter variables
+  num_stims   <- nrow(tr[tr[,'ctrl'] < 2,]) / max(tr[,'block'])
+  out <- matrix(rep(NA, st$num_cats * dim(tr)[1]), 
+    ncol = st$num_cats, nrow = dim(tr)[1])
+  
+  # # # save initial weights
+  initial_in_weights  <- st$in_wts
+  initial_out_weights <- st$out_wts
+
+  # # # iterate over each trial in the tr matrix 
+  for (trial_num in 1:dim(tr)[1]) {
+    current_input  <- tr[trial_num, (st$colskip + 1):(st$colskip + st$num_feats)]
+    current_target <- targets[trial_num,]
+    current_class  <- tr[trial_num, (st$colskip + st$num_feats + 1)]
+
+    # # # if ctrl is set to 1, reset weights to initial values //******* or generate new?
+    if (tr[trial_num, 'ctrl'] == 1) {
+      st$in_wts  <- initial_in_weights
+      st$out_wts <- initial_out_weights 
+    }
+
+    # # # complete forward pass
+    fp <- forward_pass(st$in_wts, st$out_wts, current_input, st$out_rule)
+
+    # # # calculate classification probability
+    response <- response_rule(fp$out_activation, current_target, st$beta_val)
+
+    # # # store classification accuracy
+    out[trial_num,] = response$ps
+
+    # # # adjust weights based on ctrl setting
+    if (tr[trial_num, 'ctrl'] < 2) {
+      # # # back propagate error to adjust weights
+      class_wts        <- st$out_wts[,,current_class]
+      class_activation <- fp$out_activation[,,current_class]
+
+      adjusted_wts <- 
+        backprop(class_wts, st$in_wts, class_activation, current_target,  
+          fp$hid_activation, fp$hid_activation_raw, fp$ins_w_bias, st$learning_rate)
+
+      # # # set new weights
+      st$out_wts[,,current_class] <- adjusted_wts$out_wts
+      st$in_wts                   <- adjusted_wts$in_wts
+    }  
+  }
+
+return(list(out = out))
 
 }
