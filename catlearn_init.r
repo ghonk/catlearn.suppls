@@ -22,14 +22,13 @@
 # # # CatLearn Example Script
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-# # # NEED TO IMPLEMENT CONTINUOUS VS BINOMIAL FEATURE PARAMETER
 # # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS?
 
 # # # load model functions
 source('utils.r')
 
 # # # load some data: shj types 1-6 or 4-class prob (7)
-cases <- demo_cats(6)
+cases <- demo_cats(1)
   inputs <- cases$inputs
   labels <- cases$labels
 
@@ -37,7 +36,7 @@ cases <- demo_cats(6)
 blocks <- 20
 
 # # # construct state list
-st <- generate_state(num_feats = 3, num_cats = 2, colskip = 4)
+st <- generate_state(num_feats = 3, num_cats = 2, colskip = 4, continuous = FALSE)
 
 # # # construct example ctrl variable
 ctrl <- rep(0, blocks * dim(inputs)[1])

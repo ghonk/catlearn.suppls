@@ -80,7 +80,7 @@ return(list(inputs = in_pattern,
 # # # forward_pass
 # conduct forward pass
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-forward_pass <- function(in_wts, out_wts, inputs, out_rule) {
+forward_pass <- function(in_wts, out_wts, inputs, continuous) {
   # # # init needed vars
   num_feats <- ncol(out_wts)
   num_cats  <- dim(out_wts)[3]
@@ -104,16 +104,13 @@ forward_pass <- function(in_wts, out_wts, inputs, out_rule) {
   out_activation <- array(rep(0, (num_stims * num_feats * num_cats)), 
     dim = c(num_stims, num_feats, num_cats))
   
-  # # NEED VECTORIZED HERE?
   # # # get output activation
   for (category in 1:num_cats) {
   	out_activation[,,category] <- hid_activation %*% out_wts[,,category]
   }
   
   # # # apply output activatio rule
-  if(out_rule == 'sigmoid') {
-  	out_activation <- sigmoid(out_activation)
-  }
+  if(continuous == FALSE) out_activation <- sigmoid(out_activation)
 
   return(list(out_activation     = out_activation, 
               hid_activation     = hid_activation,
@@ -124,9 +121,9 @@ forward_pass <- function(in_wts, out_wts, inputs, out_rule) {
 
 # # # generate_state
 # function to construct the state list
-generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL, 
+generate_state <- function(num_feats, num_cats, colskip, continuous, wts_range = NULL, 
   wts_center = NULL, num_hids = NULL, learning_rate = NULL, beta_val = NULL,
-  out_rule = NULL, model_seed = NULL) {
+  model_seed = NULL) {
 
   # # # assign default values if needed
   if (is.null(wts_range))      wts_range     <- 1
@@ -134,7 +131,6 @@ generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL,
   if (is.null(num_hids))       num_hids      <- 3
   if (is.null(learning_rate))  learning_rate <- 0.15
   if (is.null(beta_val))       beta_val      <- 5
-  if (is.null(out_rule))       out_rule      <- 'sigmoid'
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices
@@ -142,8 +138,8 @@ generate_state <- function(num_feats, num_cats, colskip, wts_range = NULL,
 
   
   return(st = list(num_feats = num_feats, num_cats = num_cats, colskip = colskip,
-    wts_range = wts_range, wts_center = wts_center, num_hids = num_hids, 
-    learning_rate = learning_rate, beta_val = beta_val, out_rule = out_rule,
+    continuous = continuous, wts_range = wts_range, wts_center = wts_center, 
+    num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val, 
     model_seed = model_seed, in_wts = wts$in_wts, out_wts = wts$out_wts))
 }
 
@@ -280,7 +276,8 @@ sigmoid_grad <- function(x) {
 slpDIVA <- function(st, tr) {
   
   # # # convert targets to 0/1 for binomial input data ONLY
-  targets <- global_scale(tr[,(st$colskip + 1):(st$colskip + st$num_feats)])
+  targets <- tr[,(st$colskip + 1):(st$colskip + st$num_feats)]
+  if (st$continuous == FALSE) targets <- global_scale(targets)
 
   # # # init size parameter variables
   num_stims   <- nrow(tr[tr[,'ctrl'] < 2,]) / max(tr[,'block'])
@@ -304,7 +301,7 @@ slpDIVA <- function(st, tr) {
     }
 
     # # # complete forward pass
-    fp <- forward_pass(st$in_wts, st$out_wts, current_input, st$out_rule)
+    fp <- forward_pass(st$in_wts, st$out_wts, current_input, st$continuous)
 
     # # # calculate classification probability
     response <- response_rule(fp$out_activation, current_target, st$beta_val)
