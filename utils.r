@@ -121,9 +121,13 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
 
 # # # generate_state
 # function to construct the state list
-generate_state <- function(num_feats, num_cats, colskip, continuous, wts_range = NULL, 
+generate_state <- function(input, categories, colskip, continuous, wts_range = NULL, 
   wts_center = NULL, num_hids = NULL, learning_rate = NULL, beta_val = NULL,
   model_seed = NULL) {
+
+  # # # input variables
+  num_cats  <- length(unique(categories))
+  num_feats <- dim(inputs)[2]
 
   # # # assign default values if needed
   if (is.null(wts_range))      wts_range     <- 1
@@ -157,7 +161,8 @@ generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
   trial_num <- length(prez_order)
 
   # # # create input matrix
-  input_mat <- matrix(ncol = 4,  nrow = trial_num)
+  input_mat <- matrix(ncol = dim(inputs)[2] + 1,  nrow = trial_num)
+
   for (i in 1:trial_num) {
     input_mat[i,] <- c(inputs[prez_order[i],], cat_assignment[prez_order[i]])
   }
@@ -171,8 +176,9 @@ generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
   # # # complete tr matrix
   train_test_mat <- cbind(ctrl, 1:length(ctrl), rbind(input_mat, test_mat))
   
-  dimnames(train_test_mat) <- 
-    list(c(), c('ctrl', 'trial', 'block', 'example', 'f1', 'f2', 'f3', 'category'))
+  # # # name the cols in the input matrix
+  input_col_names <- c(c('ctrl', 'trial', 'block', 'example'), paste0('f', 1:dim(inputs)[2]), 'category')
+  dimnames(train_test_mat) <- list(c(),  input_col_names)
   
   return(train_test_mat)
 }
