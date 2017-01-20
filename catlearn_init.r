@@ -22,8 +22,8 @@
 # # # CatLearn Example Script
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-# # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS?
-# # # WHAT SHOULD WE PUT IN XTENDO
+# # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS? (the latter for now)
+# # # WHAT SHOULD WE PUT IN XTDO?
 
 # # # load model functions
 source('utils.r')
@@ -82,7 +82,7 @@ ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
 tr <- generate_tr(ctrl, inputs, labels, blocks, st)
 
 # # # run the model and get results
-out <- slpDIVA(st, tr)
+out <- slpDIVA(st, tr, xtdo = TRUE)
 
 # # # combine predictions and input data
 results <- cbind(tr, pred = apply(out$out, 1, which.max))

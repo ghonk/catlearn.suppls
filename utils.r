@@ -145,6 +145,7 @@ generate_state <- function(input, categories, colskip, continuous, wts_range = N
     continuous = continuous, wts_range = wts_range, wts_center = wts_center, 
     num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val, 
     model_seed = model_seed, in_wts = wts$in_wts, out_wts = wts$out_wts))
+
 }
 
 # # # generate_tr
@@ -181,6 +182,7 @@ generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
   dimnames(train_test_mat) <- list(c(),  input_col_names)
   
   return(train_test_mat)
+
 }
 
 # # # get_wts
@@ -230,7 +232,7 @@ response_rule <- function(out_activation, target_activation, beta_val){
   # # # get list of channel comparisons
   pairwise_comps <- combn(1:num_cats, 2)
   
-  # # # get differences for each feature between categories
+  # # # get differences for each feature between channels
   diff_matrix <- 
     abs(apply(pairwise_comps, 2, function(x) {
       out_activation[,,x[1]] - out_activation[,,x[2]]}))
@@ -279,7 +281,10 @@ sigmoid_grad <- function(x) {
 # slpDIVA
 # trains stateful list processor DIVA
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-slpDIVA <- function(st, tr) {
+slpDIVA <- function(st, tr, xtdo = NULL) {
+
+  # # # set extended output to false if not specified
+  if (is.null(xtdo)) {xtdo <- FALSE}
   
   # # # convert targets to 0/1 for binomial input data ONLY
   targets <- tr[,(st$colskip + 1):(st$colskip + st$num_feats)]
@@ -291,8 +296,8 @@ slpDIVA <- function(st, tr) {
     ncol = st$num_cats, nrow = dim(tr)[1])
   
   # # # save initial weights
-  initial_in_weights  <- st$in_wts
-  initial_out_weights <- st$out_wts
+  initial_in_wts  <- st$in_wts
+  initial_out_wts <- st$out_wts
 
   # # # iterate over each trial in the tr matrix 
   for (trial_num in 1:dim(tr)[1]) {
@@ -302,8 +307,8 @@ slpDIVA <- function(st, tr) {
 
     # # # if ctrl is set to 1, reset weights to initial values //******* or generate new?
     if (tr[trial_num, 'ctrl'] == 1) {
-      st$in_wts  <- initial_in_weights
-      st$out_wts <- initial_out_weights 
+      st$in_wts  <- initial_in_wts
+      st$out_wts <- initial_out_wts 
     }
 
     # # # complete forward pass
@@ -328,9 +333,18 @@ slpDIVA <- function(st, tr) {
       # # # set new weights
       st$out_wts[,,current_class] <- adjusted_wts$out_wts
       st$in_wts                   <- adjusted_wts$in_wts
-    }  
+    }
   }
 
-return(list(out = out))
+  # # # save extended output
+  if (xtdo == TRUE) {
+    xtd_output             <- list()
+    xtd_output$final_st    <- st
+    xtd_output$initial_wts <- 
+      list(init_ins = initial_in_wts, init_outs = initial_out_wts)  
+    return(list(out = out, xtd_output = xtd_output))
+  }  
+
+  return(list(out = out))
 
 }
