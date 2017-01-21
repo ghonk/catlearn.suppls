@@ -132,43 +132,54 @@ generate_state <- function(input, categories, colskip, continuous, wts_range = N
   # # # assign default values if needed
   if (is.null(wts_range))      wts_range     <- 1
   if (is.null(wts_center))     wts_center    <- 0 
-  if (is.null(num_hids))       num_hids      <- 3
-  if (is.null(learning_rate))  learning_rate <- 0.15
-  if (is.null(beta_val))       beta_val      <- 5
+  if (is.null(num_hids))       num_hids      <- max(num_feats-1, 2)
+  if (is.null(learning_rate)) {
+    if (continuous) {          learning_rate <- 0.15
+    } else {                   learning_rate <- 0.25
+    }
+  } 
+  if (is.null(beta_val))       beta_val      <- 0
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices
   wts <- get_wts(num_feats, num_hids, num_cats, wts_range, wts_center)  
-
   
-  return(st = list(num_feats = num_feats, num_cats = num_cats, colskip = colskip,
-    continuous = continuous, wts_range = wts_range, wts_center = wts_center, 
-    num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val, 
-    model_seed = model_seed, in_wts = wts$in_wts, out_wts = wts$out_wts))
+  # model state is stored as list object
+  st <- list(
+      beta_val = beta_val, 
+      colskip = colskip,
+      continuous = continuous, 
+      in_wts = wts$in_wts, 
+      learning_rate = learning_rate, 
+      model_seed = model_seed, 
+      num_cats = num_cats, 
+      num_feats = num_feats, 
+      num_hids = num_hids, 
+      out_wts = wts$out_wts,
+      wts_center = wts_center, 
+      wts_range = wts_range
+    )
 
+  return(st = st)
 }
 
 # # # generate_tr
 # function to construct a sample training matrix
 generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
   
-  # # # eg number
+  # # # number of examples in input matrix
   eg_num <- dim(inputs)[1]
 
   # # # generate random presentation order
   prez_order <- as.vector(apply(replicate(blocks, 
     seq(1, eg_num)), 2, sample, eg_num))
-  # # # trial number
-  trial_num <- length(prez_order)
 
-  # # # create input matrix
-  input_mat <- matrix(ncol = dim(inputs)[2] + 1,  nrow = trial_num)
+  # # # create input matrix. 
+  #  First num_feat columns are features. 
+  #  Final column is class assignment
+  input_mat <- cbind(inputs[prez_order,], cat_assignment[prez_order])
 
-  for (i in 1:trial_num) {
-    input_mat[i,] <- c(inputs[prez_order[i],], cat_assignment[prez_order[i]])
-  }
-
-  # # # add trial variables to input matrix
+  # # # add block / trial variables to input matrix
   input_mat <- cbind(sort(rep(1:blocks, eg_num)), prez_order, input_mat)
 
   # # # add test phase
@@ -180,7 +191,8 @@ generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
   # # # name the cols in the input matrix
   input_col_names <- c(c('ctrl', 'trial', 'block', 'example'), paste0('f', 1:dim(inputs)[2]), 'category')
   dimnames(train_test_mat) <- list(c(),  input_col_names)
-  
+  print(train_test_mat)
+  lkdfs
   return(train_test_mat)
 
 }
