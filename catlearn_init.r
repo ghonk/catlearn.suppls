@@ -22,8 +22,6 @@
 # # # CatLearn Example Script
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-# # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS? (the latter for now)
-# # # WHAT SHOULD WE PUT IN XTDO?
 
 # # # load model functions
 source('utils.r')
