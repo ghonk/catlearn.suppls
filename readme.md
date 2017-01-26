@@ -1,6 +1,6 @@
 
 
-
+```R
 # # # load model functions
 source('utils.r')
 source('constructr.r')
@@ -22,4 +22,4 @@ tr <- tr_add(inputs, tr, labels = labels, blocks = 2,
     ctrl = 0, shuffle = TRUE, reset = TRUE)
 tr <- tr_add(inputs, tr, ctrl = 2)
 print(tr)
-
+```
