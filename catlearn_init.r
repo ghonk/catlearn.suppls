@@ -22,8 +22,6 @@
 # # # CatLearn Example Script
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-# # # SHOULD RESET GENERATE NEW WEIGHTS? OR GO BACK TO ORIGINAL WEIGHTS? (the latter for now)
-# # # WHAT SHOULD WE PUT IN XTDO?
 
 # # # load model functions
 source('utils.r')
@@ -38,18 +36,22 @@ blocks <- 20
 
 # # # construct state list
 st <- generate_state(input = inputs, categories = labels, colskip = 4, 
-  continuous = FALSE)
+  continuous = FALSE, make_wts = TRUE, learning_rate = .15)
 
 # # # construct example ctrl variable
-ctrl <- rep(0, blocks * dim(inputs)[1]) # regular update
-ctrl[1] <- 1 # backtrack to init weights
-ctrl <- c(ctrl, rep(2, dim(inputs)[1])) # no weight update
+ctrl <- rep(0, blocks * dim(inputs)[1])
+# ctrl[1] <- 1
+ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
 
 # # # construct the training matrix
 tr <- generate_tr(ctrl, inputs, labels, blocks, st)
 
+tr <- rbind(tr, tr, tr)
+
 # # # result
-out <- slpDIVA(st, tr)
+out <- slpDIVA(st, tr, xtdo = TRUE)
+
+str(out)
 
 # # # combine predictions and input data
 results <- cbind(tr, pred = apply(out$out, 1, which.max))
@@ -71,7 +73,7 @@ blocks <- 200
 
 # # # construct state list
 st <- generate_state(input = inputs, categories = labels, colskip = 4, 
-	continuous = TRUE, learning_rate = .15)
+	continuous = TRUE, make_wts = TRUE, learning_rate = .15)
 
 # # # construct example ctrl variable
 ctrl <- rep(0, blocks * dim(inputs)[1])
@@ -80,9 +82,12 @@ ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
 
 # # # construct the training matrix
 tr <- generate_tr(ctrl, inputs, labels, blocks, st)
+tr <- rbind(tr, tr, tr)
 
 # # # run the model and get results
 out <- slpDIVA(st, tr, xtdo = TRUE)
+
+str(out)
 
 # # # combine predictions and input data
 results <- cbind(tr, pred = apply(out$out, 1, which.max))
