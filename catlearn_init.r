@@ -27,7 +27,7 @@
 source('utils.r')
 
 # # # load some data: shj types 1-6 or 4-class prob (7)
-cases <- demo_cats(2)
+cases <- demo_cats(6)
   inputs <- cases$inputs
   labels <- cases$labels
 
@@ -41,6 +41,8 @@ tr <- tr_init( dim(inputs)[2] )
 tr <- tr_add(inputs, tr, labels = labels, blocks = 20, 
   ctrl = 0, shuffle = TRUE, reset = TRUE)
 tr <- tr_add(inputs, tr, ctrl = 2)
+
+tr <- rbind(tr, tr, tr)
 
 # # # result
 out <- slpDIVA(st, tr, xtdo = TRUE)
