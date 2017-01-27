@@ -20,8 +20,18 @@
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 # # # backprop
-# backpropagate error and update weights
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' backpropagate error and update weights
+#' 
+#' @param out_wts Matrix of output weights of dimensions: Hiddens + Bias X Features X Categories
+#' @param in_wts Matrix of inputs weights of dimensions: Hiddens + Bias X Features
+#' @param out_activation
+#' @param current_target
+#' @param hid_activation
+#' @param hid_activation_raw
+#' @param ins_w_bias 
+#' @param learning_rate 
+#' @return List of updated in weights and out weights
 backprop <- function(out_wts, in_wts, out_activation, current_target, 
                      hid_activation, hid_activation_raw, ins_w_bias, learning_rate){
 
@@ -45,10 +55,12 @@ backprop <- function(out_wts, in_wts, out_activation, current_target,
 
 }
 
-
 # demo_cats
-# loads shj category structures
+
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Loads shj category structures
+#' @param type Designates the SHJ category structure to be returned
+#' @return A list composed of an input pattern matrix and a category assignment vector
 demo_cats <- function(type){
   
   in_pattern <- 
@@ -78,8 +90,14 @@ return(list(inputs = in_pattern,
 }
 
 # # # forward_pass
-# conduct forward pass
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Conducts forward pass
+#' 
+#' @param in_wts
+#' @param out_wts Output weights 
+#' @param inputs Input features in matrix format
+#' @param continuous Boolean to indicate if inputs are continuous
+#' @return List of output unit activation, hidden unit activation, raw hidden unit activation and inputs with bias
 forward_pass <- function(in_wts, out_wts, inputs, continuous) {
   # # # init needed vars
   num_feats <- ncol(out_wts)
@@ -120,7 +138,14 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
 }
 
 # # # generate_state
-# function to construct the state list
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Construct the state list
+#' 
+#' @param input
+#' @param categories
+#' @param colskip
+#' @param continuous
+#' @param make_wts
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range = NULL,  wts_center    = NULL, 
   num_hids  = NULL,  learning_rate = NULL, 
@@ -135,7 +160,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   if (is.null(wts_center))     wts_center    <- 0 
   if (is.null(num_hids))       num_hids      <- 3
   if (is.null(learning_rate))  learning_rate <- 0.15
-  if (is.null(beta_val))       beta_val      <- 5
+  if (is.null(beta_val))       beta_val      <- 0
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices
@@ -152,43 +177,6 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
 }
 
-# # # generate_tr
-# function to construct a sample training matrix
-generate_tr <- function(ctrl, inputs, cat_assignment, blocks, st) {
-  
-  # # # eg number
-  eg_num <- dim(inputs)[1]
-
-  # # # generate random presentation order
-  prez_order <- as.vector(apply(replicate(blocks, 
-    seq(1, eg_num)), 2, sample, eg_num))
-  # # # trial number
-  trial_num <- length(prez_order)
-
-  # # # create input matrix
-  input_mat <- matrix(ncol = dim(inputs)[2] + 1,  nrow = trial_num)
-
-  for (i in 1:trial_num) {
-    input_mat[i,] <- c(inputs[prez_order[i],], cat_assignment[prez_order[i]])
-  }
-
-  # # # add trial variables to input matrix
-  input_mat <- cbind(sort(rep(1:blocks, eg_num)), prez_order, input_mat)
-
-  # # # add test phase
-  test_mat <- cbind(0, 1:eg_num, inputs, cat_assignment)
-
-  # # # complete tr matrix
-  train_test_mat <- cbind(ctrl, 1:length(ctrl), rbind(input_mat, test_mat))
-  
-  # # # name the cols in the input matrix
-  input_col_names <- 
-    c(c('ctrl', 'trial', 'block', 'example'), paste0('f', 1:dim(inputs)[2]), 'category')
-  dimnames(train_test_mat) <- list(c(),  input_col_names)
-  
-  return(train_test_mat)
-
-}
 
 # # # get_wts
 # generate net weights
@@ -365,4 +353,100 @@ slpDIVA <- function(st, tr, xtdo = NULL) {
 
   return(list(out = out))
 
+}
+
+
+
+# ------------------------------ #
+# Some general functions to create
+# generic tr objects!
+# ------------------------------ #
+
+
+#' Initialize a tr object.
+#' 
+#' @param nf Number of features (integer, > 0).
+#' @param feature_type String type: numeric (default), logical, etc.
+#' @return An initialized df with the appropriate columns.
+tr_init <- function(nf, feature_type = 'numeric') {
+
+  feature_cols <- list()
+  for(f in 1:nf){
+    feature_cols[[ paste0('f', f)]] = feature_type
+  }
+
+  other_cols <- list(
+    ctrl = 'integer', 
+    trial = 'integer',
+    block = 'integer',
+    example = 'integer'
+  )
+
+  all_cols <- append(other_cols, feature_cols) 
+
+  # create empty df with column types specified by all_cols
+  empty_tr <- data.frame()
+  for (col in names(all_cols)) {
+      empty_tr[[col]] <- vector(mode = all_cols[[col]], length=0)
+  }
+
+  empty_tr[['category']] <- vector(mode = 'integer', length=0)
+  empty_tr <- as.matrix(empty_tr)
+  return(empty_tr)
+}
+
+#' Add trials to an initialized tr object
+#' 
+#' @param inputs Matrix of feature values for each item.
+#' @param tr Initialized trial object.
+#' @param labels Integer class labels for each input. Default NULL.
+#' @param blocks Integer number of repetitions. Default 1. 
+#' @param shuffle Boolean, shuffle each block. Default FALSE.
+#' @param ctrl Integer control parameter, applying to all inputs. Default 2.
+#' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE.
+#' @return An updated df.
+tr_add <- function(inputs, tr,
+  labels = NULL, 
+  blocks = 1, 
+  ctrl = 2, 
+  shuffle = FALSE,
+  reset = FALSE) {
+
+  # some constants
+  numinputs <- dim(inputs)[1]
+  numfeatures <- dim(inputs)[2]
+  numtrials <- numinputs * blocks
+
+  # obtain labels vector if needed
+  if (is.null(labels)) labels <- rep(NA, numinputs)
+  
+  # generate order of trials
+  if (shuffle) {
+    examples <- as.vector(apply(replicate(blocks,seq(1, numinputs)), 2, 
+      sample, numinputs))
+  } else{
+    examples <- as.vector(replicate(blocks, seq(1, numinputs)))
+  }
+  
+  # create rows for tr
+  rows <- list(
+    ctrl = rep(ctrl, numtrials),
+    trial = 1:numtrials,
+    block = sort(rep(1:blocks, numinputs)),
+    example = examples
+  )
+
+  # add features to rows list
+  for(f in 1:numfeatures){
+    rows[[paste0('f', f)]] = inputs[examples, f]
+  }
+
+  # add category
+  rows[['category']] <- labels[examples]
+
+  # reset on first trial if needed
+  if (reset) {rows$ctrl[1] = 1}
+
+  rows <- as.matrix(data.frame(rows))
+  return(rbind(tr, rows))
 }
