@@ -40,14 +40,16 @@ st <- generate_state(input = inputs, categories = labels, colskip = 4,
 tr <- tr_init( dim(inputs)[2] )
 tr <- tr_add(inputs, tr, labels = labels, blocks = 20, 
   ctrl = 0, shuffle = TRUE, reset = TRUE)
-tr <- tr_add(inputs, tr, ctrl = 2)
+tr <- tr_add(inputs, tr, labels = labels, ctrl = 2)
 
 tr <- rbind(tr, tr, tr)
+
+
 
 # # # result
 out <- slpDIVA(st, tr, xtdo = TRUE)
 
-str(out)
+# str(out)
 
 # # # combine predictions and input data
 results <- cbind(tr, pred = apply(out$out, 1, which.max))
@@ -55,7 +57,7 @@ results <- cbind(tr, pred = apply(out$out, 1, which.max))
 # # # view comparison of predictions to labeled data
 # results[,'category'] == results[, 'pred']
 
-# # # view and calculate accuracy
+# # view and calculate accuracy
 sum(results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1],'category'] == 
   results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1], 'pred']) / 
     length((dim(tr)[1] - dim(inputs)[1]):dim(tr)[1])
@@ -73,12 +75,12 @@ st <- generate_state(input = inputs, categories = labels, colskip = 4,
 tr <- tr_init( dim(inputs)[2] )
 tr <- tr_add(inputs, tr, labels = labels, blocks = 200, 
   ctrl = 0, shuffle = TRUE, reset = TRUE)
-tr <- tr_add(inputs, tr, ctrl = 2)
+tr <- tr_add(inputs, tr, labels = labels, ctrl = 2)
 
 # # # run the model and get results
 out <- slpDIVA(st, tr, xtdo = TRUE)
 
-str(out)
+# str(out)
 
 # # # combine predictions and input data
 results <- cbind(tr, pred = apply(out$out, 1, which.max))
