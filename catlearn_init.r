@@ -27,7 +27,7 @@
 source('utils.r')
 
 # # # load some data: shj types 1-6 or 4-class prob (7)
-cases <- demo_cats(2)
+cases <- demo_cats(6)
   inputs <- cases$inputs
   labels <- cases$labels
 
@@ -41,7 +41,7 @@ st <- generate_state(input = inputs, categories = labels, colskip = 4,
 # # # construct example ctrl variable
 ctrl <- rep(0, blocks * dim(inputs)[1])
 # ctrl[1] <- 1
-ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
+# ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
 
 # # # construct the training matrix
 tr <- generate_tr(ctrl, inputs, labels, blocks, st)
@@ -77,7 +77,7 @@ st <- generate_state(input = inputs, categories = labels, colskip = 4,
 
 # # # construct example ctrl variable
 ctrl <- rep(0, blocks * dim(inputs)[1])
-ctrl[1] <- 1
+# ctrl[1] <- 1
 ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
 
 # # # construct the training matrix

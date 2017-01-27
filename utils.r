@@ -20,8 +20,18 @@
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 
 # # # backprop
-# backpropagate error and update weights
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' backpropagate error and update weights
+#' 
+#' @param out_wts Matrix of output weights of dimensions: Hiddens + Bias X Features X Categories
+#' @param in_wts Matrix of inputs weights of dimensions: Hiddens + Bias X Features
+#' @param out_activation
+#' @param current_target
+#' @param hid_activation
+#' @param hid_activation_raw
+#' @param ins_w_bias 
+#' @param learning_rate 
+#' @return List of updated in weights and out weights
 backprop <- function(out_wts, in_wts, out_activation, current_target, 
                      hid_activation, hid_activation_raw, ins_w_bias, learning_rate){
 
@@ -45,10 +55,12 @@ backprop <- function(out_wts, in_wts, out_activation, current_target,
 
 }
 
-
 # demo_cats
-# loads shj category structures
+
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Loads shj category structures
+#' @param type Designates the SHJ category structure to be returned
+#' @return A list composed of an input pattern matrix and a category assignment vector
 demo_cats <- function(type){
   
   in_pattern <- 
@@ -78,8 +90,14 @@ return(list(inputs = in_pattern,
 }
 
 # # # forward_pass
-# conduct forward pass
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Conducts forward pass
+#' 
+#' @param in_wts
+#' @param out_wts Output weights 
+#' @param inputs Input features in matrix format
+#' @param continuous Boolean to indicate if inputs are continuous
+#' @return List of output unit activation, hidden unit activation, raw hidden unit activation and inputs with bias
 forward_pass <- function(in_wts, out_wts, inputs, continuous) {
   # # # init needed vars
   num_feats <- ncol(out_wts)
@@ -120,7 +138,14 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
 }
 
 # # # generate_state
-# function to construct the state list
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' Construct the state list
+#' 
+#' @param input
+#' @param categories
+#' @param colskip
+#' @param continuous
+#' @param make_wts
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range = NULL,  wts_center    = NULL, 
   num_hids  = NULL,  learning_rate = NULL, 
@@ -135,7 +160,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   if (is.null(wts_center))     wts_center    <- 0 
   if (is.null(num_hids))       num_hids      <- 3
   if (is.null(learning_rate))  learning_rate <- 0.15
-  if (is.null(beta_val))       beta_val      <- 5
+  if (is.null(beta_val))       beta_val      <- 0
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices
