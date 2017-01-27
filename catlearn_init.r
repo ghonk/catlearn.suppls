@@ -31,20 +31,16 @@ cases <- demo_cats(6)
   inputs <- cases$inputs
   labels <- cases$labels
 
-# # # number of blocks
-blocks <- 20
-
 # # # construct state list
 st <- generate_state(input = inputs, categories = labels, colskip = 4, 
   continuous = FALSE, make_wts = TRUE, learning_rate = .15)
 
-# # # construct example ctrl variable
-ctrl <- rep(0, blocks * dim(inputs)[1])
-# ctrl[1] <- 1
-# ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
-
-# # # construct the training matrix
-tr <- generate_tr(ctrl, inputs, labels, blocks, st)
+# # # construct tr object
+# 20 training blocks, then a test pass for every example.
+tr <- tr_init( dim(inputs)[2] )
+tr <- tr_add(inputs, tr, labels = labels, blocks = 20, 
+  ctrl = 0, shuffle = TRUE, reset = TRUE)
+tr <- tr_add(inputs, tr, ctrl = 2)
 
 tr <- rbind(tr, tr, tr)
 
@@ -62,27 +58,22 @@ results <- cbind(tr, pred = apply(out$out, 1, which.max))
 # # # view and calculate accuracy
 sum(results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1],'category'] == 
   results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1], 'pred']) / 
-	length((dim(tr)[1] - dim(inputs)[1]):dim(tr)[1])
+    length((dim(tr)[1] - dim(inputs)[1]):dim(tr)[1])
 
 # # # # continuous test // IRIS data
 inputs <- as.matrix(iris[,1:4])
 labels <- as.numeric(iris$Species)
 
-# # # number of blocks
-blocks <- 200
-
 # # # construct state list
 st <- generate_state(input = inputs, categories = labels, colskip = 4, 
-	continuous = TRUE, make_wts = TRUE, learning_rate = .15)
+    continuous = TRUE, make_wts = TRUE, learning_rate = .15)
 
-# # # construct example ctrl variable
-ctrl <- rep(0, blocks * dim(inputs)[1])
-# ctrl[1] <- 1
-ctrl <- c(ctrl, rep(2, dim(inputs)[1]))
-
-# # # construct the training matrix
-tr <- generate_tr(ctrl, inputs, labels, blocks, st)
-tr <- rbind(tr, tr, tr)
+# # # construct tr object
+# 200 training blocks, then a test pass for every example.
+tr <- tr_init( dim(inputs)[2] )
+tr <- tr_add(inputs, tr, labels = labels, blocks = 200, 
+  ctrl = 0, shuffle = TRUE, reset = TRUE)
+tr <- tr_add(inputs, tr, ctrl = 2)
 
 # # # run the model and get results
 out <- slpDIVA(st, tr, xtdo = TRUE)
@@ -98,4 +89,4 @@ results <- cbind(tr, pred = apply(out$out, 1, which.max))
 # # # view and calculate accuracy
 sum(results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1],'category'] == 
   results[(dim(tr)[1] - dim(inputs)[1]):dim(tr)[1], 'pred']) / 
-	length((dim(tr)[1] - dim(inputs)[1]):dim(tr)[1])
+    length((dim(tr)[1] - dim(inputs)[1]):dim(tr)[1])
