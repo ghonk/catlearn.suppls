@@ -21,16 +21,17 @@
 
 # # # backprop
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' 
 #' backpropagate error and update weights
 #' 
-#' @param out_wts Matrix of output weights of dimensions: Hiddens + Bias X Features X Categories
-#' @param in_wts Matrix of inputs weights of dimensions: Hiddens + Bias X Features
-#' @param out_activation
-#' @param current_target
-#' @param hid_activation
-#' @param hid_activation_raw
-#' @param ins_w_bias 
-#' @param learning_rate 
+#' @param out_wts Matrix of output weights
+#' @param in_wts Matrix of inputs weights
+#' @param out_activation Array of output unit activations
+#' @param current_target Target feature values for reconstruction error calculation
+#' @param hid_activation Hidden unit activation
+#' @param hid_activation_raw Raw hidden unit activation
+#' @param ins_w_bias Inputs with bias unit added
+#' @param learning_rate Learning rate for weight updates through backpropagation
 #' @return List of updated in weights and out weights
 backprop <- function(out_wts, in_wts, out_activation, current_target, 
                      hid_activation, hid_activation_raw, ins_w_bias, learning_rate){
@@ -56,9 +57,10 @@ backprop <- function(out_wts, in_wts, out_activation, current_target,
 }
 
 # demo_cats
-
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' 
 #' Loads shj category structures
+#' 
 #' @param type Designates the SHJ category structure to be returned
 #' @return A list composed of an input pattern matrix and a category assignment vector
 demo_cats <- function(type){
@@ -91,12 +93,13 @@ return(list(inputs = in_pattern,
 
 # # # forward_pass
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' 
 #' Conducts forward pass
 #' 
-#' @param in_wts
-#' @param out_wts Output weights 
-#' @param inputs Input features in matrix format
-#' @param continuous Boolean to indicate if inputs are continuous
+#' @param in_wts Matrix of weights from input to hidden layer
+#' @param out_wts Array of weights from hidden layer to output channels 
+#' @param inputs Matrix of input features
+#' @param continuous Boolean value to indicate if inputs are continuous
 #' @return List of output unit activation, hidden unit activation, raw hidden unit activation and inputs with bias
 forward_pass <- function(in_wts, out_wts, inputs, continuous) {
   # # # init needed vars
@@ -139,13 +142,15 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
 
 # # # generate_state
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' 
 #' Construct the state list
 #' 
-#' @param input
-#' @param categories
-#' @param colskip
-#' @param continuous
-#' @param make_wts
+#' @param input Complete matrix of inputs for training
+#' @param categories Vector of category assignment values
+#' @param colskip Scalar for number of columns to skip in the tr matrix
+#' @param continuous Boolean value indicating if inputs are continuous
+#' @param make_wts Boolean value indicating if initial weights should be generated 
+#' @return List of the model hyperparameters and weights (by request) 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range = NULL,  wts_center    = NULL, 
   num_hids  = NULL,  learning_rate = NULL, 
@@ -179,8 +184,16 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
 
 # # # get_wts
-# generate net weights
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' # Generate input and output weights for initialization of DIVA
+#' 
+#' @param num_feats Scalar value for the number of features in the input
+#' @param num_hids Scalar value for the number of hidden units in the model architecture
+#' @param num_cats Scalar value for the number of categories
+#' @param wts_range Scalar value for the range of the generated weights
+#' @param wts_center Scalar value for the center of the weights   
+#' @return List with input (input to hidden) weights and output weights (hidden to output channels) 
 get_wts <- function(num_feats, num_hids, num_cats, wts_range, wts_center) {
   # # # set bias
   bias <- 1
@@ -202,13 +215,23 @@ get_wts <- function(num_feats, num_hids, num_cats, wts_range, wts_center) {
 }
 
 # # # global_scale
-# scale inputs to 0/1
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-global_scale <- function(x) { x / 2 + 0.5 }
+#'
+#' Scale model targets to 0 : 1 values appropriate for sigmoid output unit activation
+#' 
+#' @param inputs Matrix of inputs in format -1 : 1 that need to be scaled
+#' @return Matrix of inputs scaled to 0 : 1 
+global_scale <- function(inputs) { inputs / 2 + 0.5 }
 
 # response_rule
-# convert output activations to classification
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#'  convert output activations to classification
+#' 
+#' @param out_activation Array of output channel activations
+#' @param target_activation Array of output unit targets
+#' @param beta_val Scalar value for the beta parameter (set in st)
+#' @return List of classification probability, focusing weights and sum squared error
 response_rule <- function(out_activation, target_activation, beta_val){
   num_feats <- ncol(out_activation)
   num_cats  <- dim(out_activation)[3]
@@ -253,8 +276,12 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 }
 
 # sigmoid
-# returns sigmoid evaluated elementwize in X
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Returns sigmoid evaluated elementwise in X
+#' 
+#' @param x Matrix of values to be evaluated with sigmoid function
+#' @return Same format of input, evaluated with the sigmoid function
 sigmoid <- function(x) {
   g = 1 / (1 + exp(-x))
 
@@ -263,8 +290,12 @@ sigmoid <- function(x) {
 }
 
 # sigmoid gradient
-# returns the gradient of the sigmoid function evaluated at x
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Returns gradient of the sigmoid function evaluated at x
+#' 
+#' @param x Values to be evaluated for the sigmoid gradient
+#' @return Gradient of the sigmoid function for the input
 sigmoid_grad <- function(x) {
   
   return(g = ((sigmoid(x)) * (1 - sigmoid(x))))
@@ -272,8 +303,14 @@ sigmoid_grad <- function(x) {
 }
 
 # slpDIVA
-# trains stateful list processor DIVA
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Train stateful list processor DIVA
+#' 
+#' @param st A list of the model parameters
+#' @param tr A matrix of the input and class labels
+#' @param xtdo A boolean value indicating if extended output is desired
+#' @return List including a matrix of model classification probabilities and list of model's final state 
 slpDIVA <- function(st, tr, xtdo = NULL) {
 
   # # # set extended output to false if not specified
@@ -345,29 +382,24 @@ slpDIVA <- function(st, tr, xtdo = NULL) {
   # # # save extended output
   if (xtdo == TRUE) {
     xtd_output             <- list()
-    xtd_output$final_st    <- st
     xtd_output$wts_history <- wts_history
     
     return(list(out = out, xtd_output = xtd_output))
   }  
 
-  return(list(out = out))
+  return(list(out = out, st = st))
 
 }
 
 
-
-# ------------------------------ #
-# Some general functions to create
-# generic tr objects!
-# ------------------------------ #
-
-
-#' Initialize a tr object.
+# tr_init
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Initialize a tr object
 #' 
-#' @param nf Number of features (integer, > 0).
-#' @param feature_type String type: numeric (default), logical, etc.
-#' @return An initialized df with the appropriate columns.
+#' @param nf Number of features (integer, > 0)
+#' @param feature_type String type: numeric (default), logical, etc
+#' @return An initialized df with the appropriate columns
 tr_init <- function(nf, feature_type = 'numeric') {
 
   feature_cols <- list()
@@ -395,6 +427,9 @@ tr_init <- function(nf, feature_type = 'numeric') {
   return(empty_tr)
 }
 
+# tr_add
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
 #' Add trials to an initialized tr object
 #' 
 #' @param inputs Matrix of feature values for each item.
