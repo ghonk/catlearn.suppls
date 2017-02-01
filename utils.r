@@ -436,13 +436,13 @@ tr_init <- function(nf, feature_type = 'numeric') {
 #'
 #' Add trials to an initialized tr object
 #' 
-#' @param inputs Matrix of feature values for each item.
-#' @param tr Initialized trial object.
-#' @param labels Integer class labels for each input. Default NULL.
-#' @param blocks Integer number of repetitions. Default 1. 
-#' @param shuffle Boolean, shuffle each block. Default FALSE.
-#' @param ctrl Integer control parameter, applying to all inputs. Default 2.
-#' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE.
+#' @param inputs Matrix of feature values for each item
+#' @param tr Initialized trial object
+#' @param labels Integer class labels for each input. Default NULL
+#' @param blocks Integer number of repetitions. Default 1
+#' @param shuffle Boolean, shuffle each block. Default FALSE
+#' @param ctrl Integer control parameter, applying to all inputs. Default 2
+#' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
 #' @return An updated df.
 tr_add <- function(inputs, tr,
   labels = NULL, 
