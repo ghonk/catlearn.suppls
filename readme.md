@@ -1,25 +1,13 @@
+# Catlearn DIVA
 
 
-```R
-# # # load model functions
-source('utils.r')
-source('constructr.r')
 
-# # # load some data: shj types 1-6 or 4-class prob (7)
-cases <- demo_cats(2)
-  inputs <- cases$inputs
-  labels <- cases$labels
+## Tr Constructor to-do:
 
-# make a single presentation order with a test set after training
-tr <- tr_init( dim(inputs)[1] )
-tr <- tr_add(inputs, tr, labels = labels, blocks = 2, 
-    ctrl = 0, shuffle = TRUE, reset = TRUE)
-tr <- tr_add(inputs, tr, ctrl = 2)
-print(tr)
+- auto init a `tr` if `tr_add` is called first.
+- checks to make sure the settings are sensible, i.e., `ctrl=0` if `reset = TRUE`.
+- less type-switching! start in matrix type, then stay there.
+- use additional columns to indicate things like init number or training vs. test set. this will make analysis *much* easier.
+- add "presets" for difference phases (i.e., option-sets for training vs test).
 
-# And you can just add another model's presentation order on there!
-tr <- tr_add(inputs, tr, labels = labels, blocks = 2, 
-    ctrl = 0, shuffle = TRUE, reset = TRUE)
-tr <- tr_add(inputs, tr, ctrl = 2)
-print(tr)
-```
+

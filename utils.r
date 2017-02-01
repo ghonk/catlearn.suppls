@@ -130,7 +130,7 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
     out_activation[,,category] <- hid_activation %*% out_wts[,,category]
   }
   
-  # # # apply output activatio rule
+  # # # apply output activation rule
   if(continuous == FALSE) out_activation <- sigmoid(out_activation)
 
   return(list(out_activation     = out_activation, 
@@ -238,7 +238,7 @@ response_rule <- function(out_activation, target_activation, beta_val){
   num_stims <- nrow(target_activation)
   if (is.null(num_stims)) {num_stims <- 1}
 
-  # # # calc error  
+  # # # compute error  
   ssqerror <- array(as.vector(
     apply(out_activation, 3, function(x) {x - target_activation})),
       c(num_stims, num_feats, num_cats))
@@ -276,6 +276,10 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 }
 
 # sigmoid
+<<<<<<< HEAD
+=======
+# returns sigmoid evaluated elementwise in X
+>>>>>>> 822d5b6b3312a3a27356c73412d8f05dee2a20f9
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
 #' Returns sigmoid evaluated elementwise in X
