@@ -29,17 +29,17 @@ slpDIVA(st, tr, xtdo = FALSE)
 
   \code{out_wts} - A matrix of weights of dimensions \code{num_hids + 1} x \code{num_cats}. Can be set to \code{NULL} when the first line of the \code{tr} matrix includes control code 1, \code{ctrl = 1}.   
 
-  \code{continuous} - A boolean value to indicate if the inputs are continuous or dichotomous. Set \code{Continuous = TRUE} when the inputs are continuous. 
+  \code{continuous} - A boolean value to indicate if the inputs are continuous or binary. Set \code{Continuous = TRUE} when the inputs are continuous. 
 
   \code{wts_range} - A scalar value for the range of the generated weights.
 
-  \code{wts_center} - A scalar value for the center of the weights.
+  \code{wts_center} - A scalar value for the center of the weights. This is commonly fixed at 0.
     
   \code{num_hids} - A scalar value for the number of hidden units. A rough rule of thumb for this hyperparameter is \code{num_feats - 1}. 
 
   \code{learning_rate} - Learning rate for weight updates through backpropagation
 
-  \code{beta_val} - Scalar value for the Beta parameter. \code{beta_val} controls the degree of feature focusing (not unlike attention) that the model uses to make classification decisions (Conaway & Kurtz, 2014) 
+  \code{beta_val} - Scalar value for the Beta parameter. \code{beta_val} controls the degree of feature focusing (not unlike attention) that the model uses to make classification decisions (see: Conaway & Kurtz, 2014; Kurtz, 2015) 
     
   \code{model_seed} - Scalar value used to set the random seed for weight generation. 
 
@@ -49,7 +49,7 @@ slpDIVA(st, tr, xtdo = FALSE)
 
   \code{opt1, opt2, ...} - optional columns, which may have any names you wish, and you may have as many as you like, but they must be placed after the \code{ctrl} column, and before the remaining columns (see below). These optional columns are ignored by this function, but you may wish to use them for readability. For example, you might include columns for block number, trial number, and stimulus ID number. The argument \code{colskip} (see above) must be set to the number of optional columns plus 1.
 
-  \code{x1, x2, ...} - input to the model, there must be one column for each input unit. Each row is one trial. Dichotomous inputs should be in the format \code{-1, 1}. Continuous inputs should be scaled to the range of \code{-1, 1}. As the model's goal is to accurately reconstruct the inputs, the input to the model is also the teaching signal. For testing under conditions of missing information, input features can be set to 0 to negate the contribution of the feature(s) for the classification decision of that trial. 
+  \code{x1, x2, ...} - input to the model, there must be one column for each input unit. Each row is one trial. Dichotomous inputs should be in the format \code{-1, 1}. Continuous inputs should be scaled to the range of \code{-1, 1}. As the model's learning objective is to accurately reconstruct the inputs, the input to the model is also the teaching signal. For testing under conditions of missing information, input features can be set to 0 to negate the contribution of the feature(s) for the classification decision of that trial. 
 
 }
 \value{
