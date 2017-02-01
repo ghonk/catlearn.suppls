@@ -27,13 +27,13 @@
 source('utils.r')
 
 # # # load some data: shj types 1-6 or 4-class prob (7)
-cases <- demo_cats(2)
+cases <- demo_cats(4)
   inputs <- cases$inputs
   labels <- cases$labels
 
 # # # construct state list
 st <- generate_state(input = inputs, categories = labels, colskip = 4, 
-  continuous = FALSE, make_wts = TRUE, learning_rate = .15)
+  continuous = FALSE, make_wts = TRUE, learning_rate = .15, beta_val = 5)
 
 # # # construct tr object
 # 20 training blocks, then a test pass for every example.
@@ -71,7 +71,7 @@ st <- generate_state(input = inputs, categories = labels, colskip = 4,
 # # # construct tr object
 # 200 training blocks, then a test pass for every example.
 tr <- tr_init( dim(inputs)[2] )
-tr <- tr_add(inputs, tr, labels = labels, blocks = 100, 
+tr <- tr_add(inputs, tr, labels = labels, blocks = 200, 
   ctrl = 0, shuffle = TRUE, reset = TRUE)
 tr <- tr_add(inputs, tr, labels = labels, ctrl = 2)
 

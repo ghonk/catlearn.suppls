@@ -149,7 +149,13 @@ forward_pass <- function(in_wts, out_wts, inputs, continuous) {
 #' @param categories Vector of category assignment values
 #' @param colskip Scalar for number of columns to skip in the tr matrix
 #' @param continuous Boolean value indicating if inputs are continuous
-#' @param make_wts Boolean value indicating if initial weights should be generated 
+#' @param make_wts Boolean value indicating if initial weights should be generated
+#' @param wts_range Scalar value for the range of the generated weights
+#' @param wts_center Scalar value for the center of the weights
+#' @param num_hids Scalar value for the number of hidden units in the model architecture
+#' @param learning_rate Learning rate for weight updates through backpropagation
+#' @param beta_val Scalar value for the beta parameter
+#' @param model_seed Scalar value to set the random seed
 #' @return List of the model hyperparameters and weights (by request) 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range = NULL,  wts_center    = NULL, 
@@ -276,13 +282,10 @@ return(list(ps       = (ssqerror / sum(ssqerror)),
 }
 
 # sigmoid
-<<<<<<< HEAD
-=======
-# returns sigmoid evaluated elementwise in X
->>>>>>> 822d5b6b3312a3a27356c73412d8f05dee2a20f9
+# returns sigmoid evaluated element-wise in X
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
-#' Returns sigmoid evaluated elementwise in X
+#' Returns sigmoid evaluated element-wise in X
 #' 
 #' @param x Matrix of values to be evaluated with sigmoid function
 #' @return Same format of input, evaluated with the sigmoid function
@@ -403,7 +406,7 @@ slpDIVA <- function(st, tr, xtdo = NULL) {
 #' 
 #' @param nf Number of features (integer, > 0)
 #' @param feature_type String type: numeric (default), logical, etc
-#' @return An initialized df with the appropriate columns
+#' @return An initialized dataframe with the appropriate columns
 tr_init <- function(nf, feature_type = 'numeric') {
 
   feature_cols <- list()
@@ -443,7 +446,7 @@ tr_init <- function(nf, feature_type = 'numeric') {
 #' @param shuffle Boolean, shuffle each block. Default FALSE
 #' @param ctrl Integer control parameter, applying to all inputs. Default 2
 #' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
-#' @return An updated df.
+#' @return An updated dataframe
 tr_add <- function(inputs, tr,
   labels = NULL, 
   blocks = 1, 
