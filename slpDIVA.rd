@@ -23,7 +23,7 @@ slpDIVA(st, tr, xtdo = FALSE)
 
   \code{num_cats} - Number of categories for the problem.
 
-  \code{colskip} - Skip the first N columns of the tr array, where \code{N = colskip}}. \code{colskip} should be set to the number of optional columns you have added to matrix \code{tr}, PLUS ONE. So, if you have added no optional columns, \code{colskip = 1}. This is because the first (non-optional) column contains the control values, below.
+  \code{colskip} - Skip the first N columns of the tr array, where \code{N = colskip}. \code{colskip} should be set to the number of optional columns you have added to matrix \code{tr}, PLUS ONE. So, if you have added no optional columns, \code{colskip = 1}. This is because the first (non-optional) column contains the control values, below.
 
   \code{in_wts} - A matrix of weights of dimensions \code{num_feats + 1} x \code{num_hids}. Can be set to \code{NULL} when the first line of the \code{tr} matrix includes control code 1, \code{ctrl = 1}.  
 
