@@ -164,7 +164,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
   # # # input variables
   num_cats  <- length(unique(categories))
-  num_feats <- dim(inputs)[2]
+  num_feats <- dim(input)[2]
 
   # # # assign default values if needed
   if (is.null(wts_range))      wts_range     <- 1
