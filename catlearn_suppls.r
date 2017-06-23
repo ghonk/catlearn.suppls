@@ -1,4 +1,13 @@
-# # # generate_state
+
+
+# blk_accuracy
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' calculates accuracy across blocks
+# blk_accuracy <- function()
+
+
+# generate_state
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' 
 #' Construct the state list
@@ -45,6 +54,12 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
     model_seed = model_seed, in_wts = wts$in_wts, out_wts = wts$out_wts))
 
 }
+
+# plot_training
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' plots training data
+# plot_training <- function()
 
 # tr_init
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -150,6 +165,6 @@ tr_add <- function(inputs, tr,
   # reset on first trial if needed
   if (reset) {rows$ctrl[1] <- 1}
 
-  rows <- as.matrix(data.frame(rows))
+  rows <- as.matrix(rows)
   return(rbind(tr, rows))
 }
