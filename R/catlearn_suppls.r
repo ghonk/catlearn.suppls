@@ -3,7 +3,8 @@
 # blk_accuracy
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
-#' calculates accuracy across blocks
+#' Calculates accuracy across blocks
+#' blk_accuracy()
 # blk_accuracy <- function()
 
 
@@ -24,6 +25,8 @@
 #' @param beta_val Scalar value for the beta parameter
 #' @param model_seed Scalar value to set the random seed
 #' @return List of the model hyperparameters and weights (by request) 
+#' generate_state()
+
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range = NULL,  wts_center    = NULL, 
   num_hids  = NULL,  learning_rate = NULL, 
@@ -55,10 +58,133 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
 }
 
+# get_test_inputs
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Function to grab inputs that might be useful for model testing
+#' 
+#' @param target_cats Variable to choose a category: 
+#'     unifr - (+ unfr1 and unfr2 for autoencoder)
+#'     type# - Shepard, Hovland and Jenkin's elemental types, e.g., type2, type 3...
+#'     multiclass - 4 class problem (shj type 2)
+#' get_test_inputs()
+
+get_test_inputs <- function(target_cats){ 
+
+  test_inputs <- 
+    list(
+      unifr = list(ins = matrix(c(  
+      1,  1,  1,  1,
+      1,  1, -1,  1,
+      1, -1,  1,  1,
+     -1,  1,  1,  1,
+     -1, -1, -1, -1,
+     -1, -1,  1, -1,
+     -1,  1, -1, -1,
+      1, -1, -1, -1), ncol = 4, byrow = TRUE),
+      labels = c(1, 1, 1, 1, 2, 2, 2, 2)),
+      
+      unifr1 = list(ins = matrix(c(  
+      1,  1,  1,  1,
+      1,  1, -1,  1,
+      1, -1,  1,  1,
+     -1,  1,  1,  1), ncol = 4, byrow = TRUE),
+      labels = c(1, 1, 1, 1)),
+
+      unifr2 = list(ins = matrix(c(  
+     -1, -1, -1, -1,
+     -1, -1,  1, -1,
+     -1,  1, -1, -1,
+      1, -1, -1, -1), ncol = 4, byrow = TRUE),
+      labels = c(1, 1, 1, 1)),
+      
+      type1 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 1, 1, 1, 2, 2, 2, 2)),
+
+      type2 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 1, 2, 2, 2, 2, 1, 1)),
+
+      type3 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 1, 2, 1, 1, 2, 2, 2)),
+
+      type4 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 1, 1, 2, 1, 2, 2, 2)),
+
+      type5 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(2, 1, 1, 1, 1, 2, 2, 2)),
+
+      type6 = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 2, 2, 1, 2, 1, 1, 2)),
+
+      multiclass = list(ins = matrix(c(
+     -1, -1, -1,
+     -1, -1,  1,
+     -1,  1, -1,
+     -1,  1,  1,
+      1, -1, -1,
+      1, -1,  1,
+      1,  1, -1,
+      1,  1,  1),  ncol = 3, byrow = TRUE),
+      labels = c(1, 1, 2, 2, 3, 3, 4, 4)))
+
+  target_cat <- test_inputs[[target_cats]]
+
+  return(target_cat)
+}
+
 # plot_training
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
 #' plots training data
+#' plot_training()
 # plot_training <- function()
 
 # tr_init
@@ -69,6 +195,8 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 #' @param n_feats Number of features (integer, > 0)
 #' @param feature_type String type: numeric (default), logical, etc
 #' @return An initialized dataframe with the appropriate columns
+#' tr_init()
+
 tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 
   feature_cols <- list()
@@ -114,6 +242,8 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 #' @param ctrl Integer control parameter, applying to all inputs. Default 2
 #' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
 #' @return An updated dataframe
+#' tr_add()
+
 tr_add <- function(inputs, tr,
   labels = NULL, 
   blocks = 1, 
@@ -156,7 +286,7 @@ tr_add <- function(inputs, tr,
   label_mat <- matrix(-1, ncol = num_cats, nrow = numinputs)
 
   for (i in 1:numinputs) {
-    label_mat[i, labels[i]] <- 1
+    label_mat[i, labels[examples]] <- 1
   }
 
   rows <- data.frame(rows)
