@@ -285,7 +285,7 @@ tr_add <- function(inputs, tr,
 
   # add features to rows list
   for(f in 1:numfeatures){
-    rows[[paste0('f', f)]] = inputs[examples, f]
+    rows[[paste0('f', f)]] <- inputs[examples, f]
   }
 
   # add category labels
@@ -294,7 +294,7 @@ tr_add <- function(inputs, tr,
   label_mat <- matrix(-1, ncol = num_cats, nrow = numinputs)
 
   for (i in 1:numinputs) {
-    label_mat[i, labels[examples]] <- 1
+    label_mat[i, labels[examples[i]]] <- 1
   }
 
   rows <- data.frame(rows)
