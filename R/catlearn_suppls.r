@@ -25,8 +25,7 @@
 #' @param beta_val Scalar value for the beta parameter
 #' @param model_seed Scalar value to set the random seed
 #' @return List of the model hyperparameters and weights (by request)
-#' @example
-#' generate_state()
+#' @example generate_state()
 #' @export
 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
@@ -65,12 +64,10 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 #'
 #' Function to grab inputs that might be useful for model testing
 #'
-#' @param target_cats Variable to choose a category:
-#'     unifr - (+ unfr1 and unfr2 for autoencoder)
-#'     type# - Shepard, Hovland and Jenkin's elemental types, e.g., type2, type 3...
-#'     multiclass - 4 class problem (shj type 2)
-#' @example
-#' get_test_inputs()
+#' @param target_cats Variable to choose a category, unifr (unfr1 and unfr2 
+#'     for autoencoder), type# (Shepard, Hovland and Jenkin's elemental 
+#'     types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)   
+#' @example get_test_inputs()
 #' @export
 
 get_test_inputs <- function(target_cats){
@@ -199,8 +196,7 @@ get_test_inputs <- function(target_cats){
 #' @param n_feats Number of features (integer, > 0)
 #' @param feature_type String type: numeric (default), logical, etc
 #' @return An initialized dataframe with the appropriate columns
-#' @example
-#' tr_init()
+#' @example tr_init()
 #' @export
 
 tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
@@ -248,8 +244,7 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 #' @param ctrl Integer control parameter, applying to all inputs. Default 2
 #' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
 #' @return An updated dataframe
-#' @example
-#' tr_add()
+#' @example tr_add()
 #' @export
 
 tr_add <- function(inputs, tr,
@@ -290,7 +285,6 @@ tr_add <- function(inputs, tr,
 
   # add category labels
   num_cats <- max(labels)
-
   label_mat <- matrix(-1, ncol = num_cats, nrow = numinputs)
 
   for (i in 1:numinputs) {
