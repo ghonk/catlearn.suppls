@@ -73,8 +73,12 @@ To examine performance we can match the output (response probabilities) to the t
 ```{r}
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
+
 # combine the output with the input
 trn_result <- cbind(tr, round(diva_model$out, 4))
+
+# classification response probabilities at the end of training
+tail(trn_result)
 ```
 
 <!-- And to plot the results, we just need to match the category labels to the response probabiliites. -->

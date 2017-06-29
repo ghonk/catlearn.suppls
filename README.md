@@ -66,9 +66,21 @@ To examine performance we can match the output (response probabilities) to the t
 ``` r
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
+
 # combine the output with the input
 trn_result <- cbind(tr, round(diva_model$out, 4))
+
+# classification response probabilities at the end of training
+tail(trn_result)
 ```
+
+    ##        ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
+    ## [795,]    0   795   100       5 -1 -1 -1 -1 -1  1 0.0003 0.9997
+    ## [796,]    0   796   100       1  1  1  1  1  1 -1 0.9991 0.0009
+    ## [797,]    0   797   100       4 -1  1  1  1  1 -1 1.0000 0.0000
+    ## [798,]    0   798   100       8  1 -1 -1 -1 -1  1 0.0001 0.9999
+    ## [799,]    0   799   100       2  1  1 -1  1  1 -1 0.9999 0.0001
+    ## [800,]    0   800   100       3  1 -1  1  1  1 -1 0.9995 0.0005
 
 <!-- And to plot the results, we just need to match the category labels to the response probabiliites. -->
 <!-- ```{r} -->
