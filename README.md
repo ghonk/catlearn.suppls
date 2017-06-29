@@ -40,7 +40,7 @@ nfeats <- dim(ins)[2]
 ncats <- length(unique(labs))
 ```
 
-Then set the model parameters. The design pattern for catlearn is a *stateful list processor*. This means we provide the model with a list that contains all of the models hyperparamters.
+Then set the model parameters. The design pattern for `catlearn` is called a *stateful list processor*. This means we provide the model with a list that contains all of the models hyperparamters and it will return to us a similar list that includes the model's learned parameters (weights).
 
 ``` r
 # construct a state list
@@ -56,9 +56,8 @@ We then use the `catlearn.suppls` package to create a training matrix, `tr`.
 tr <- tr_init(nfeats, ncats)
 
 # tr_add fills in the data and procedure (i.e., training, test, model reset)
-tr <- tr_add(inputs = ins, tr = tr,
-  labels = labs, blocks = 100, ctrl = 0, shuffle = TRUE,
-  reset = TRUE)
+tr <- tr_add(inputs = ins, tr = tr, labels = labs, blocks = 100, ctrl = 0, 
+  shuffle = TRUE, reset = TRUE)
 ```
 
 Finally, we run the model with our state list `st` and training matrix `tr`.
