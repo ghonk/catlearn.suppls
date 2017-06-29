@@ -64,9 +64,9 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 #'
 #' Function to grab inputs that might be useful for model testing
 #'
-#' @param target_cats Variable to choose a category, unifr (unfr1 and unfr2 
-#'     for autoencoder), type# (Shepard, Hovland and Jenkin's elemental 
-#'     types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)   
+#' @param target_cats Variable to choose a category, unifr (unfr1 and unfr2
+#'     for autoencoder), type# (Shepard, Hovland and Jenkin's elemental
+#'     types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)
 #' @example get_test_inputs()
 #' @export
 
@@ -277,7 +277,7 @@ tr_add <- function(inputs, tr,
     block = sort(rep(1:blocks, numinputs)),
     example = examples
   )
-
+#
   # add features to rows list
   for(f in 1:numfeatures){
     rows[[paste0('f', f)]] <- inputs[examples, f]
@@ -285,9 +285,9 @@ tr_add <- function(inputs, tr,
 
   # add category labels
   num_cats <- max(labels)
-  label_mat <- matrix(-1, ncol = num_cats, nrow = numinputs)
+  label_mat <- matrix(-1, ncol = num_cats, nrow = numtrials)
 
-  for (i in 1:numinputs) {
+  for (i in 1:numtrials) {
     label_mat[i, labels[examples[i]]] <- 1
   }
 
