@@ -21,11 +21,6 @@ First load the packages and data
 
 ``` r
 library(catlearn)
-```
-
-    ## Warning: package 'catlearn' was built under R version 3.2.5
-
-``` r
 library(catlearn.suppls)
 
 # get some sample data
