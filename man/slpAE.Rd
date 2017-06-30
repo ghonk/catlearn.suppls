@@ -17,7 +17,6 @@ desired}
 \value{
 List including a matrix of model classification
     probabilities and list of model's final state
-slpAE()
 }
 \description{
 Train stateful list processor autoencoder

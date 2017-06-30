@@ -24,7 +24,6 @@ tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = NULL,
 }
 \value{
 An updated dataframe
-tr_add()
 }
 \description{
 Add trials to an initialized tr object

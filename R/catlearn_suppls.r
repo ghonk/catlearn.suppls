@@ -9,7 +9,6 @@
 #' @param out_probs Matrix of output probabilities produced by the model.
 #' @param blocks Boolean to toggle block averaged classification probabilities, default is TRUE
 #' @return Vector of classification probabilities for the target class
-#' @example response_probs(tr, out_probs, blocks = TRUE)
 #' @export
 
 response_probs <- function(tr, out_probs, blocks = TRUE) {
@@ -64,7 +63,6 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 #' @param beta_val Scalar value for the beta parameter
 #' @param model_seed Scalar value to set the random seed
 #' @return List of the model hyperparameters and weights (by request)
-#' @example generate_state()
 #' @export
 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
@@ -106,7 +104,6 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 #' @param target_cats Variable to choose a category, unifr (unfr1 and unfr2
 #'     for autoencoder), type# (Shepard, Hovland and Jenkin's elemental
 #'     types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)
-#' @example get_test_inputs()
 #' @export
 
 get_test_inputs <- function(target_cats){
@@ -222,9 +219,6 @@ get_test_inputs <- function(target_cats){
 
 # plot_training
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-#'
-#' plots training data
-#' plot_training()
 # plot_training <- function()
 
 # tr_init
@@ -235,7 +229,6 @@ get_test_inputs <- function(target_cats){
 #' @param n_feats Number of features (integer, > 0)
 #' @param feature_type String type: numeric (default), logical, etc
 #' @return An initialized dataframe with the appropriate columns
-#' @example tr_init()
 #' @export
 
 tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
@@ -283,7 +276,6 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 #' @param ctrl Integer control parameter, applying to all inputs. Default 2
 #' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
 #' @return An updated dataframe
-#' @example tr_add()
 #' @export
 
 tr_add <- function(inputs, tr,

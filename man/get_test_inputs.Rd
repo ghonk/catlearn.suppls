@@ -7,11 +7,9 @@
 get_test_inputs(target_cats)
 }
 \arguments{
-\item{target_cats}{Variable to choose a category: 
-    unifr - (+ unfr1 and unfr2 for autoencoder)
-    type# - Shepard, Hovland and Jenkin's elemental types, e.g., type2, type 3...
-    multiclass - 4 class problem (shj type 2)
-get_test_inputs()}
+\item{target_cats}{Variable to choose a category, unifr (unfr1 and unfr2
+for autoencoder), type# (Shepard, Hovland and Jenkin's elemental
+types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)}
 }
 \description{
 Function to grab inputs that might be useful for model testing

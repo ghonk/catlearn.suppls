@@ -1,4 +1,5 @@
 # # # .ae.backprop
+#'
 #' backpropagate error and update weights
 #'
 #' @param out_wts Matrix of output weights
@@ -12,8 +13,6 @@
 #' @param learning_rate Learning rate for weight updates through
 #'     backpropagation
 #' @return List of updated in weights and out weights
-#' @example
-#' .ae.backprop()
 #' @export
 
 .ae.backprop <- function(out_wts, in_wts, out_activation, current_target,
@@ -51,7 +50,6 @@
 #'     continuous
 #' @return List of output unit activation, hidden unit activation, raw
 #'     hidden unit activation and inputs with bias
-#'.ae.forward_pass()
 #' @export
 #'
 .ae.forward_pass <- function(in_wts, out_wts, inputs, continuous) {
@@ -96,7 +94,7 @@
 
 # # # .ae.get_wts
 #'
-#' # Generate input and output weights for initialization of ae
+#' Generate input and output weights for initialization of ae
 #'
 #' @param num_feats Scalar value for the number of features in the
 #'     input
@@ -108,7 +106,6 @@
 #' @param wts_center Scalar value for the center of the weights
 #' @return List with input (input to hidden) weights and output
 #'     weights (hidden to output channels)
-#' .ae.get_wts()
 #' @export
 #'
 .ae.get_wts <- function(num_feats, num_hids, num_cats, wts_range,
@@ -138,7 +135,7 @@
 #' @param inputs Matrix of inputs in format -1 : 1 that need to be
 #'     scaled
 #' @return Matrix of inputs scaled to 0 : 1
-#' .ae.global_scale()
+#' @export
 
 .ae.global_scale <- function(inputs) { inputs / 2 + 0.5 }
 
@@ -151,7 +148,6 @@
 #' @param beta_val Scalar value for the beta parameter (set in st)
 #' @return List of classification probability, focusing weights and
 #'     sum squared error
-#' .ae.response_rule()
 #' @export
 #'
 .ae.response_rule <- function(out_activation, target_activation){
@@ -182,9 +178,9 @@
 #'
 #' @param x Matrix of values to be evaluated with sigmoid function
 #' @return Same format of input, evaluated with the sigmoid function
-#' .ae.sigmoid()
 #' @export
 #'
+
 .ae.sigmoid <- function(x) {
     g = 1 / (1 + exp(-x))
     return(g)
@@ -196,9 +192,9 @@
 #'
 #' @param x Values to be evaluated for the sigmoid gradient
 #' @return Gradient of the sigmoid function for the input
-#' .ae.sigmoid_grad()
 #' @export
 #'
+
 .ae.sigmoid_grad <- function(x) {
     return(g = ((.ae.sigmoid(x)) * (1 - .ae.sigmoid(x))))
 }
@@ -213,9 +209,9 @@
 #'     desired
 #' @return List including a matrix of model classification
 #'     probabilities and list of model's final state
-#' slpAE()
 #' @export
 #'
+
 slpAE <- function(st, tr, xtdo = FALSE) {
     # # # construct weight matrix history list
     wts_history <- list(initial = list(), final = list())

@@ -2,8 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{tr_init}
 \alias{tr_init}
-\title{plots training data
-plot_training()}
+\title{Initialize a tr object}
 \usage{
 tr_init(n_feats, n_cats, feature_type = "numeric")
 }
@@ -14,7 +13,6 @@ tr_init(n_feats, n_cats, feature_type = "numeric")
 }
 \value{
 An initialized dataframe with the appropriate columns
-tr_init()
 }
 \description{
 Initialize a tr object

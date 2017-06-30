@@ -2,8 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{generate_state}
 \alias{generate_state}
-\title{Calculates accuracy across blocks
-blk_accuracy()}
+\title{Construct the state list}
 \usage{
 generate_state(input, categories, colskip, continuous, make_wts,
   wts_range = NULL, wts_center = NULL, num_hids = NULL,
@@ -33,8 +32,7 @@ generate_state(input, categories, colskip, continuous, make_wts,
 \item{model_seed}{Scalar value to set the random seed}
 }
 \value{
-List of the model hyperparameters and weights (by request) 
-generate_state()
+List of the model hyperparameters and weights (by request)
 }
 \description{
 Construct the state list

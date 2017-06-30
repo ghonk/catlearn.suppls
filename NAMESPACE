@@ -3,6 +3,7 @@
 export(.ae.backprop)
 export(.ae.forward_pass)
 export(.ae.get_wts)
+export(.ae.global_scale)
 export(.ae.response_rule)
 export(.ae.sigmoid)
 export(.ae.sigmoid_grad)
