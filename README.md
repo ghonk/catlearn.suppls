@@ -24,7 +24,7 @@ library(catlearn)
 library(catlearn.suppls)
 ```
 
-Then load some data from 'get\_test\_inputs' and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
+Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
 
 ``` r
 # get some sample data
@@ -77,18 +77,18 @@ tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       8  1 -1 -1 -1 -1  1 0.2419 0.7581
-    ## [92,]    0    92    12       1  1  1  1  1  1 -1 0.9560 0.0440
-    ## [93,]    0    93    12       4 -1  1  1  1  1 -1 0.7406 0.2594
-    ## [94,]    0    94    12       7 -1  1 -1 -1 -1  1 0.2824 0.7176
-    ## [95,]    0    95    12       3  1 -1  1  1  1 -1 0.7097 0.2903
-    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.9596 0.0404
+    ## [91,]    0    91    12       4 -1  1  1  1  1 -1 0.9257 0.0743
+    ## [92,]    0    92    12       2  1  1 -1  1  1 -1 0.7521 0.2479
+    ## [93,]    0    93    12       8  1 -1 -1 -1 -1  1 0.1206 0.8794
+    ## [94,]    0    94    12       1  1  1  1  1  1 -1 0.9528 0.0472
+    ## [95,]    0    95    12       3  1 -1  1  1  1 -1 0.8225 0.1775
+    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1655 0.8345
 
-Use `model_accuracy` to extract the response probabilities for the target category (for every training step or averaged across blocks)
+Use `model_accuracy` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
 ``` r
 model_accuracy(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.6219147 0.7293998 0.7709270 0.7890778 0.7944218 0.8127874 0.8251634
-    ##  [8] 0.8296625 0.8373796 0.8448928 0.8455264 0.8475665
+    ##  [1] 0.5396502 0.6900195 0.7311651 0.7556480 0.7695949 0.7770491 0.7895382
+    ##  [8] 0.8093507 0.8210212 0.8332613 0.8470625 0.8586197

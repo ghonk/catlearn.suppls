@@ -31,7 +31,7 @@ library(catlearn)
 library(catlearn.suppls)
 ```
 
-Then load some data from 'get_test_inputs' and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
+Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
 
 ```{r}
 
@@ -84,7 +84,7 @@ trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
-Use `model_accuracy` to extract the response probabilities for the target category (for every training step or averaged across blocks)
+Use `model_accuracy` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
 ```{r}
 model_accuracy(tr, diva_model$out, blocks = TRUE)
