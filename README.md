@@ -77,18 +77,18 @@ tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       8  1 -1 -1 -1 -1  1 0.0906 0.9094
-    ## [92,]    0    92    12       4 -1  1  1  1  1 -1 0.9021 0.0979
-    ## [93,]    0    93    12       1  1  1  1  1  1 -1 0.9313 0.0687
-    ## [94,]    0    94    12       3  1 -1  1  1  1 -1 0.9414 0.0586
-    ## [95,]    0    95    12       6 -1 -1  1 -1 -1  1 0.0861 0.9139
-    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.8974 0.1026
+    ## [91,]    0    91    12       8  1 -1 -1 -1 -1  1 0.2419 0.7581
+    ## [92,]    0    92    12       1  1  1  1  1  1 -1 0.9560 0.0440
+    ## [93,]    0    93    12       4 -1  1  1  1  1 -1 0.7406 0.2594
+    ## [94,]    0    94    12       7 -1  1 -1 -1 -1  1 0.2824 0.7176
+    ## [95,]    0    95    12       3  1 -1  1  1  1 -1 0.7097 0.2903
+    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.9596 0.0404
 
-`model_accuracy` can be used to extract the response probabilities for the target category (for every training step or averaged across blocks)
+Use `model_accuracy` to extract the response probabilities for the target category (for every training step or averaged across blocks)
 
 ``` r
 model_accuracy(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5804156 0.7402500 0.7827221 0.8063014 0.8286746 0.8481832 0.8626191
-    ##  [8] 0.8801585 0.8967152 0.9018396 0.9122791 0.9259406
+    ##  [1] 0.6219147 0.7293998 0.7709270 0.7890778 0.7944218 0.8127874 0.8251634
+    ##  [8] 0.8296625 0.8373796 0.8448928 0.8455264 0.8475665
