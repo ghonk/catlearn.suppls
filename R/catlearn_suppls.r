@@ -1,11 +1,50 @@
 
 
-# blk_accuracy
+# model_accuracy
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
-#' Calculates accuracy across blocks
-#' blk_accuracy()
-# blk_accuracy <- function()
+#' Produces classification probability for the target class, by item or by block.
+#'
+#' @param tr Matrix used to train the model.
+#' @param out_probs Matrix of output probabilities produced by the model.
+#' @param blocks Boolean to toggle block averaged classification probabilities, default is TRUE
+#' @return Vector of classification probabilities for the target class
+#' @example model_accuracy(tr, out_probs, blocks = TRUE)
+#' @export
+
+model_accuracy <- function(tr, out_probs, blocks = TRUE) {
+  n_trials <- dim(tr)[1]
+  all_cols <- colnames(tr)
+
+  # find the target columns and correct class
+  targets <-
+    substr(all_cols, 1, 1) == 't' &
+      is.finite(
+        suppressWarnings(
+          as.numeric(substr(all_cols, 2, 2))))
+  target_cols <- apply(tr[,targets], 1, which.max)
+
+  # get probability of correct class
+  class_prob <- rep(NA, n_trials)
+  for (i in 1:n_trials) {
+    class_prob[i] <- out_probs[i, target_cols[i]]
+  }
+
+  # get probability averaged for each block
+  if (blocks == TRUE) {
+    tr_comp  <- cbind(tr, class_prob)
+    n_blocks <- max(tr_comp[,'block'])
+    blk_avg <- rep(NA, n_blocks)
+
+    # average for each block
+    for (i in 1:n_blocks) {
+      blk_avg[i] <-
+        mean(tr_comp[tr_comp[,'block'] == i,'class_prob'])
+    }
+    return(blk_avg)
+  }
+  return(class_prob)
+}
 
 
 # generate_state
