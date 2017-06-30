@@ -20,15 +20,20 @@ install.packages("devtools")
 devtools::install_github("ghonk/catlearn.suppls")
 ```
 
-`catlearn.suppls` is intended to be used as a supplement to the `catlearn` package. It facilitates modeling with the DIVergent Autoencoder architecture and features a suite of functions under development for active research projects.
+`catlearn.suppls` is intended to be used as a supplement to the `catlearn` package. It facilitates modeling with the DIVergent Autoencoder architecture (`slpDIVA()`) and features a suite of functions under development for active research projects.
 
-## Modeling example
+## Package Demonstration
 
-First load the packages and data
+First load the packages. 
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 library(catlearn)
 library(catlearn.suppls)
+```
+
+Then load some data from 'get_test_inputs' and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
+
+```{r}
 
 # get some sample data
 test_inputs <- get_test_inputs('unifr')
@@ -47,7 +52,7 @@ Then set the model parameters. The design pattern for `catlearn` is called a _st
 ```{r}
 # construct a state list
 st <- list(learning_rate = 0.25, num_feats = nfeats, num_hids = 3, num_cats = ncats,
-  beta_val = 5, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
+  beta_val = 0, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
   wts_center = 0, colskip = 4)
 ```
 
@@ -58,7 +63,7 @@ We then use the `catlearn.suppls` package to create a training matrix, `tr`.
 tr <- tr_init(nfeats, ncats)
 
 # tr_add fills in the data and procedure (i.e., training, test, model reset)
-tr <- tr_add(inputs = ins, tr = tr, labels = labs, blocks = 100, ctrl = 0, 
+tr <- tr_add(inputs = ins, tr = tr, labels = labs, blocks = 12, ctrl = 0, 
   shuffle = TRUE, reset = TRUE)
 ```
 
@@ -74,17 +79,17 @@ To examine performance we can match the output (response probabilities) to the t
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
 
-# combine the output with the input
-trn_result <- cbind(tr, round(diva_model$out, 4))
 
-# classification response probabilities at the end of training
+trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
-<!-- And to plot the results, we just need to match the category labels to the response probabiliites. -->
+`model_accuracy` can be used to extract the response probabilities for the target category (for every training step or averaged across blocks)
 
-<!-- ```{r} -->
-<!-- diva_model$out[1:dim(diva_model$out)[1],apply(trn_result[,c('t1', 't2')], 1, which.max)] -->
-<!-- ``` -->
+```{r}
+model_accuracy(tr, diva_model$out, blocks = TRUE)
+```
+
+
 
   
