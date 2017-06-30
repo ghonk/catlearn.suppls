@@ -84,10 +84,10 @@ trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
-Use `model_accuracy` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
+Use `response_probs` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
 ```{r}
-model_accuracy(tr, diva_model$out, blocks = TRUE)
+response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
 

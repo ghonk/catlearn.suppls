@@ -1,6 +1,6 @@
 
 
-# model_accuracy
+# response_probs
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
 #' Produces classification probability for the target class, by item or by block.
@@ -9,10 +9,10 @@
 #' @param out_probs Matrix of output probabilities produced by the model.
 #' @param blocks Boolean to toggle block averaged classification probabilities, default is TRUE
 #' @return Vector of classification probabilities for the target class
-#' @example model_accuracy(tr, out_probs, blocks = TRUE)
+#' @example response_probs(tr, out_probs, blocks = TRUE)
 #' @export
 
-model_accuracy <- function(tr, out_probs, blocks = TRUE) {
+response_probs <- function(tr, out_probs, blocks = TRUE) {
   n_trials <- dim(tr)[1]
   all_cols <- colnames(tr)
 
