@@ -82,7 +82,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   if (is.null(num_hids))       num_hids      <- 3
   if (is.null(learning_rate))  learning_rate <- 0.15
   if (is.null(beta_val))       beta_val      <- 0
-  if (is.null(theta))   theta  <- 1
+  if (is.null(theta))          theta         <- 1
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices

@@ -44,7 +44,7 @@ Then set the model parameters. The design pattern for `catlearn` is called a *st
 ``` r
 # construct a state list
 st <- list(learning_rate = 0.25, num_feats = nfeats, num_hids = 3, num_cats = ncats,
-  beta_val = 0, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
+  beta_val = 0, theta = 1, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
   wts_center = 0, colskip = 4)
 ```
 
@@ -77,12 +77,12 @@ tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       3  1 -1  1  1  1 -1 0.9348 0.0652
-    ## [92,]    0    92    12       8  1 -1 -1 -1 -1  1 0.1603 0.8397
-    ## [93,]    0    93    12       6 -1 -1  1 -1 -1  1 0.1417 0.8583
-    ## [94,]    0    94    12       5 -1 -1 -1 -1 -1  1 0.0517 0.9483
-    ## [95,]    0    95    12       2  1  1 -1  1  1 -1 0.8423 0.1577
-    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1104 0.8896
+    ## [91,]    0    91    12       3  1 -1  1  1  1 -1 0.8258 0.1742
+    ## [92,]    0    92    12       4 -1  1  1  1  1 -1 0.8576 0.1424
+    ## [93,]    0    93    12       2  1  1 -1  1  1 -1 0.7487 0.2513
+    ## [94,]    0    94    12       6 -1 -1  1 -1 -1  1 0.2889 0.7111
+    ## [95,]    0    95    12       1  1  1  1  1  1 -1 0.9050 0.0950
+    ## [96,]    0    96    12       5 -1 -1 -1 -1 -1  1 0.0881 0.9119
 
 Use `response_probs` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
@@ -90,5 +90,5 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5597402 0.7171934 0.7492978 0.7673893 0.7811764 0.7904833 0.8089365
-    ##  [8] 0.8170723 0.8374425 0.8518137 0.8668265 0.8847822
+    ##  [1] 0.5074778 0.6814667 0.7260062 0.7466802 0.7590648 0.7677999 0.7759907
+    ##  [8] 0.7874339 0.7995712 0.8072215 0.8242602 0.8291747
