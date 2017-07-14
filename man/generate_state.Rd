@@ -6,8 +6,7 @@
 \usage{
 generate_state(input, categories, colskip, continuous, make_wts,
   wts_range = NULL, wts_center = NULL, num_hids = NULL,
-  learning_rate = NULL, beta_val = NULL, theta = NULL,
-  model_seed = NULL)
+  learning_rate = NULL, beta_val = NULL, phi = NULL, model_seed = NULL)
 }
 \arguments{
 \item{input}{Complete matrix of inputs for training}
@@ -30,7 +29,7 @@ generate_state(input, categories, colskip, continuous, make_wts,
 
 \item{beta_val}{Scalar value for the beta parameter}
 
-\item{theta}{Scalar value for response mapping (Default = 1, meaning no effect)}
+\item{phi}{Scalar value for response mapping (Default = 1, meaning no effect)}
 
 \item{model_seed}{Scalar value to set the random seed}
 }

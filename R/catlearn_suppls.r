@@ -61,7 +61,7 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 #' @param num_hids Scalar value for the number of hidden units in the model architecture
 #' @param learning_rate Learning rate for weight updates through backpropagation
 #' @param beta_val Scalar value for the beta parameter
-#' @param theta Scalar value for response mapping (Default = 1, meaning no effect)
+#' @param phi Scalar value for response mapping (Default = 1, meaning no effect)
 #' @param model_seed Scalar value to set the random seed
 #' @return List of the model hyperparameters and weights (by request)
 #' @export
@@ -69,7 +69,7 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 generate_state <- function(input, categories, colskip, continuous, make_wts,
   wts_range  = NULL,  wts_center    = NULL, 
   num_hids   = NULL,  learning_rate = NULL,
-  beta_val   = NULL,  theta         = NULL,
+  beta_val   = NULL,  phi           = NULL,
   model_seed = NULL) {
 
   # # # input variables
@@ -82,7 +82,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   if (is.null(num_hids))       num_hids      <- 3
   if (is.null(learning_rate))  learning_rate <- 0.15
   if (is.null(beta_val))       beta_val      <- 0
-  if (is.null(theta))          theta         <- 1
+  if (is.null(phi))            phi           <- 1
   if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
 
   # # # initialize weight matrices
@@ -95,7 +95,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   return(st = list(num_feats = num_feats, num_cats = num_cats, colskip = colskip,
     continuous = continuous, wts_range = wts_range, wts_center = wts_center,
     num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val, 
-    theta = theta, model_seed = model_seed, in_wts = wts$in_wts,
+    phi = phi, model_seed = model_seed, in_wts = wts$in_wts,
     out_wts = wts$out_wts))
 
 }
