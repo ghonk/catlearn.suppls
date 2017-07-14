@@ -52,7 +52,7 @@ Then set the model parameters. The design pattern for `catlearn` is called a _st
 ```{r}
 # construct a state list
 st <- list(learning_rate = 0.25, num_feats = nfeats, num_hids = 3, num_cats = ncats,
-  beta_val = 0, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
+  beta_val = 0, theta = 1, continuous = FALSE, in_wts = NULL, out_wts = NULL, wts_range = 1,
   wts_center = 0, colskip = 4)
 ```
 
