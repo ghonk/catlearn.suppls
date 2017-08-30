@@ -27,7 +27,7 @@ library(catlearn.suppls)
 Set Up and Execution
 --------------------
 
-Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
+Now load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes a set of classic category structures; we'll use a 4-D family resemblance + unidimensional rule category structure for this demo.
 
 ``` r
 # get some sample data
@@ -42,7 +42,7 @@ nfeats <- dim(ins)[2]
 ncats <- length(unique(labs))
 ```
 
-Then set the model parameters. The design pattern for `catlearn` is called a *stateful list processor*. This means we provide the model with a list that contains all of the models hyperparamters and it will return to us a similar list that includes the model's learned parameters (weights).
+Next, setup the model parameters. The design pattern for `catlearn` is called a *stateful list processor*. This means we provide the model with a list that contains all of the model's hyperparamters and it returns a similar list that includes the model's learned parameters (weights).
 
 ``` r
 # construct a state list
@@ -83,12 +83,12 @@ tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       1  1  1  1  1  1 -1 0.9506 0.0494
-    ## [92,]    0    92    12       3  1 -1  1  1  1 -1 0.8011 0.1989
-    ## [93,]    0    93    12       4 -1  1  1  1  1 -1 0.8271 0.1729
-    ## [94,]    0    94    12       5 -1 -1 -1 -1 -1  1 0.0964 0.9036
-    ## [95,]    0    95    12       6 -1 -1  1 -1 -1  1 0.2092 0.7908
-    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1880 0.8120
+    ## [91,]    0    91    12       6 -1 -1  1 -1 -1  1 0.1590 0.8410
+    ## [92,]    0    92    12       4 -1  1  1  1  1 -1 0.8389 0.1611
+    ## [93,]    0    93    12       8  1 -1 -1 -1 -1  1 0.1716 0.8284
+    ## [94,]    0    94    12       1  1  1  1  1  1 -1 0.9360 0.0640
+    ## [95,]    0    95    12       2  1  1 -1  1  1 -1 0.8564 0.1436
+    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1154 0.8846
 
 ### Evaluating performance
 
@@ -98,8 +98,8 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5706806 0.7083523 0.7473335 0.7596062 0.7710120 0.7791213 0.7870588
-    ##  [8] 0.8033194 0.8098715 0.8191506 0.8353003 0.8447566
+    ##  [1] 0.5643582 0.6936080 0.7438706 0.7713369 0.7822231 0.7978918 0.8119429
+    ##  [8] 0.8272332 0.8428917 0.8522970 0.8673757 0.8786071
 
 ### Plotting
 

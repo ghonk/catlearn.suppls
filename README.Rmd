@@ -33,7 +33,7 @@ library(catlearn.suppls)
 
 ## Set Up and Execution
 
-Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
+Now load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes a set of classic category structures; we'll use a 4-D family resemblance + unidimensional rule category structure for this demo.
 
 ```{r}
 
@@ -49,7 +49,7 @@ nfeats <- dim(ins)[2]
 ncats <- length(unique(labs))
 ```
 
-Then set the model parameters. The design pattern for `catlearn` is called a _stateful list processor_. This means we provide the model with a list that contains all of the models hyperparamters and it will return to us a similar list that includes the model's learned parameters (weights).
+Next, setup the model parameters. The design pattern for `catlearn` is called a _stateful list processor_. This means we provide the model with a list that contains all of the model's hyperparamters and it returns a similar list that includes the model's learned parameters (weights).
 
 ```{r}
 # construct a state list
