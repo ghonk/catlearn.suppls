@@ -14,4 +14,3 @@ types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)}
 \description{
 Function to grab inputs that might be useful for model testing
 }
-

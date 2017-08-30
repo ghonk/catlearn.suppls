@@ -79,7 +79,7 @@ To examine performance we can match the output (response probabilities) to the t
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
 
-
+# Combine the inputs and outputs (if desir)
 trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
@@ -91,5 +91,19 @@ response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
 
+`plot_training` is a simple function used to plot the learning of a series of models.
 
+```{r}
+# # # run a few models
+model_list <- list(slpDIVA(st, tr), slpDIVA(st, tr), slpDIVA(st, tr))
   
+# # # get response probabilities
+model_list_resp_probs <- 
+  lapply(model_list, function(x) {
+    response_probs(tr, x$out, blocks = TRUE)})
+
+# # # plot the leanrning curves
+plot_training(model_list_resp_probs)
+```
+
+

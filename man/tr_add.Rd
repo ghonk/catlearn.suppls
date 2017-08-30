@@ -28,4 +28,3 @@ An updated dataframe
 \description{
 Add trials to an initialized tr object
 }
-

@@ -17,4 +17,3 @@ An initialized dataframe with the appropriate columns
 \description{
 Initialize a tr object
 }
-

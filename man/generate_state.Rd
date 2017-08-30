@@ -39,4 +39,3 @@ List of the model hyperparameters and weights (by request)
 \description{
 Construct the state list
 }
-

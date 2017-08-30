@@ -21,4 +21,3 @@ List including a matrix of model classification
 \description{
 Train stateful list processor autoencoder
 }
-

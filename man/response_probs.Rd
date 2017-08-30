@@ -19,4 +19,3 @@ Vector of classification probabilities for the target class
 \description{
 Produces classification probability for the target class, by item or by block.
 }
-
