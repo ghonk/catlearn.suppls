@@ -71,18 +71,18 @@ To examine performance we can match the output (response probabilities) to the t
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
 
-
+# Combine the inputs and outputs (if desir)
 trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       1  1  1  1  1  1 -1 0.9065 0.0935
-    ## [92,]    0    92    12       2  1  1 -1  1  1 -1 0.7327 0.2673
-    ## [93,]    0    93    12       5 -1 -1 -1 -1 -1  1 0.0816 0.9184
-    ## [94,]    0    94    12       4 -1  1  1  1  1 -1 0.9021 0.0979
-    ## [95,]    0    95    12       7 -1  1 -1 -1 -1  1 0.2965 0.7035
-    ## [96,]    0    96    12       8  1 -1 -1 -1 -1  1 0.0884 0.9116
+    ## [91,]    0    91    12       4 -1  1  1  1  1 -1 0.9267 0.0733
+    ## [92,]    0    92    12       6 -1 -1  1 -1 -1  1 0.0630 0.9370
+    ## [93,]    0    93    12       8  1 -1 -1 -1 -1  1 0.1409 0.8591
+    ## [94,]    0    94    12       1  1  1  1  1  1 -1 0.9266 0.0734
+    ## [95,]    0    95    12       7 -1  1 -1 -1 -1  1 0.2311 0.7689
+    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.8636 0.1364
 
 Use `response_probs` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
@@ -90,5 +90,22 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5556175 0.7073199 0.7532435 0.7586340 0.7573295 0.7790488 0.7860507
-    ##  [8] 0.7947793 0.8013187 0.8193325 0.8291415 0.8311614
+    ##  [1] 0.6020348 0.7115763 0.7541212 0.7788590 0.7919481 0.8035750 0.8233220
+    ##  [8] 0.8385666 0.8543633 0.8637496 0.8782623 0.8877440
+
+`plot_training` is a simple function used to plot the learning of a series of models.
+
+``` r
+# # # run a few models
+model_list <- list(slpDIVA(st, tr), slpDIVA(st, tr), slpDIVA(st, tr))
+  
+# # # get response probabilities
+model_list_resp_probs <- 
+  lapply(model_list, function(x) {
+    response_probs(tr, x$out, blocks = TRUE)})
+
+# # # plot the leanrning curves
+plot_training(model_list_resp_probs)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
