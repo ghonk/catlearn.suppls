@@ -22,7 +22,7 @@ devtools::install_github("ghonk/catlearn.suppls")
 
 `catlearn.suppls` is intended to be used as a supplement to the `catlearn` package. It facilitates modeling with the DIVergent Autoencoder architecture (`slpDIVA()`) and features a suite of functions under development for active research projects.
 
-## Package Demonstration
+# Demo
 
 First load the packages. 
 
@@ -30,6 +30,8 @@ First load the packages.
 library(catlearn)
 library(catlearn.suppls)
 ```
+
+## Set Up and Execution
 
 Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
 
@@ -73,16 +75,19 @@ Finally, we run the model with our state list `st` and training matrix `tr`.
 diva_model <- slpDIVA(st, tr)
 ```
 
+## Inspecting Results
+
 To examine performance we can match the output (response probabilities) to the training matrix `tr`.
 
 ```{r}
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
 
-# Combine the inputs and outputs (if desir)
+# Combine the inputs and outputs (if desired)
 trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
+### Evaluating performance
 
 Use `response_probs` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
@@ -90,6 +95,7 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
+### Plotting
 
 `plot_training` is a simple function used to plot the learning of a series of models.
 

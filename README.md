@@ -14,8 +14,8 @@ devtools::install_github("ghonk/catlearn.suppls")
 
 `catlearn.suppls` is intended to be used as a supplement to the `catlearn` package. It facilitates modeling with the DIVergent Autoencoder architecture (`slpDIVA()`) and features a suite of functions under development for active research projects.
 
-Package Demonstration
----------------------
+Demo
+====
 
 First load the packages.
 
@@ -23,6 +23,9 @@ First load the packages.
 library(catlearn)
 library(catlearn.suppls)
 ```
+
+Set Up and Execution
+--------------------
 
 Then load some data from `get_test_inputs` and assign variables for the properties of the data. The package includes some classic category structures and we'll use a 4D family resemblance + unidimensional rule category structure for this demo.
 
@@ -65,24 +68,29 @@ Finally, we run the model with our state list `st` and training matrix `tr`.
 diva_model <- slpDIVA(st, tr)
 ```
 
+Inspecting Results
+------------------
+
 To examine performance we can match the output (response probabilities) to the training matrix `tr`.
 
 ``` r
 # name the output columns
 colnames(diva_model$out) <- paste0('o', 1:dim(diva_model$out)[2])
 
-# Combine the inputs and outputs (if desir)
+# Combine the inputs and outputs (if desired)
 trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       4 -1  1  1  1  1 -1 0.9267 0.0733
-    ## [92,]    0    92    12       6 -1 -1  1 -1 -1  1 0.0630 0.9370
-    ## [93,]    0    93    12       8  1 -1 -1 -1 -1  1 0.1409 0.8591
-    ## [94,]    0    94    12       1  1  1  1  1  1 -1 0.9266 0.0734
-    ## [95,]    0    95    12       7 -1  1 -1 -1 -1  1 0.2311 0.7689
-    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.8636 0.1364
+    ## [91,]    0    91    12       1  1  1  1  1  1 -1 0.9506 0.0494
+    ## [92,]    0    92    12       3  1 -1  1  1  1 -1 0.8011 0.1989
+    ## [93,]    0    93    12       4 -1  1  1  1  1 -1 0.8271 0.1729
+    ## [94,]    0    94    12       5 -1 -1 -1 -1 -1  1 0.0964 0.9036
+    ## [95,]    0    95    12       6 -1 -1  1 -1 -1  1 0.2092 0.7908
+    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1880 0.8120
+
+### Evaluating performance
 
 Use `response_probs` to extract the response probabilities for the target categories (for every training step (trial) or averaged across blocks)
 
@@ -90,8 +98,10 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.6020348 0.7115763 0.7541212 0.7788590 0.7919481 0.8035750 0.8233220
-    ##  [8] 0.8385666 0.8543633 0.8637496 0.8782623 0.8877440
+    ##  [1] 0.5706806 0.7083523 0.7473335 0.7596062 0.7710120 0.7791213 0.7870588
+    ##  [8] 0.8033194 0.8098715 0.8191506 0.8353003 0.8447566
+
+### Plotting
 
 `plot_training` is a simple function used to plot the learning of a series of models.
 
