@@ -1,51 +1,5 @@
 
 
-# response_probs
-#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-#'
-#' Produces classification probability for the target class, by item or by block.
-#'
-#' @param tr Matrix used to train the model.
-#' @param out_probs Matrix of output probabilities produced by the model.
-#' @param blocks Boolean to toggle block averaged classification probabilities, default is TRUE
-#' @return Vector of classification probabilities for the target class
-#' @export
-
-response_probs <- function(tr, out_probs, blocks = TRUE) {
-  n_trials <- dim(tr)[1]
-  all_cols <- colnames(tr)
-
-  # find the target columns and correct class
-  targets <-
-    substr(all_cols, 1, 1) == 't' &
-      is.finite(
-        suppressWarnings(
-          as.numeric(substr(all_cols, 2, 2))))
-  target_cols <- apply(tr[,targets], 1, which.max)
-
-  # get probability of correct class
-  class_prob <- rep(NA, n_trials)
-  for (i in 1:n_trials) {
-    class_prob[i] <- out_probs[i, target_cols[i]]
-  }
-
-  # get probability averaged for each block
-  if (blocks == TRUE) {
-    tr_comp  <- cbind(tr, class_prob)
-    n_blocks <- max(tr_comp[,'block'])
-    blk_avg <- rep(NA, n_blocks)
-
-    # average for each block
-    for (i in 1:n_blocks) {
-      blk_avg[i] <-
-        mean(tr_comp[tr_comp[,'block'] == i,'class_prob'])
-    }
-    return(blk_avg)
-  }
-  return(class_prob)
-}
-
-
 # generate_state
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
@@ -67,7 +21,7 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 #' @export
 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
-  wts_range  = NULL,  wts_center    = NULL, 
+  wts_range  = NULL,  wts_center    = NULL,
   num_hids   = NULL,  learning_rate = NULL,
   beta_val   = NULL,  phi           = NULL,
   model_seed = NULL) {
@@ -94,7 +48,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
   return(st = list(num_feats = num_feats, num_cats = num_cats, colskip = colskip,
     continuous = continuous, wts_range = wts_range, wts_center = wts_center,
-    num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val, 
+    num_hids = num_hids, learning_rate = learning_rate, beta_val = beta_val,
     phi = phi, model_seed = model_seed, in_wts = wts$in_wts,
     out_wts = wts$out_wts))
 
@@ -223,7 +177,46 @@ get_test_inputs <- function(target_cats){
 
 # plot_training
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
-# plot_training <- function()
+#'
+#' Plots the training curve for N models.
+#'
+#' @param model_list List of model response probabilities across training blocks
+#' @param model_names Optional vector of character values corresponding to model names
+#' @return Training line plot
+#' @export
+
+plot_training <- function(model_list, model_names = NULL) {
+  blocks <- length(model_list[[1]])
+  n_models <- length(model_list)
+  if (is.null(model_names)) {model_names <- 1:length(model_list)}
+
+  line_cols <- rainbow(n_models)
+  line_typs <- (0:(n_models - 1) %% 6) + 1
+
+  # create blank plot
+  plot.new()
+
+  # plot first model
+  plot(model_list[[1]], type = 'b', lty = line_typs[1], col = line_cols[1],
+    xlim = c(1, blocks), ylim = c(0, 1), ylab = 'Accuracy',
+    xlab = 'Block', xaxt = 'n', yaxt = 'n')
+
+  # plot remaining models
+  if (n_models > 1) {
+    for (i in 2:length(model_list)) {
+      lines(x = 1:blocks, y = model_list[[i]], lty = line_typs[i],
+        col = line_cols[i], type = 'b')
+    }
+  }
+
+  # fix axis
+  axis(1, at = seq(1, blocks, 1), labels = TRUE)
+  axis(2, at = seq(0.0, 1, .1), labels = TRUE)
+
+  # make legend
+  legend(x = 'bottomright', legend = model_names, lty = line_typs,
+    col = line_cols, cex = 0.75)
+}
 
 # tr_init
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
@@ -266,6 +259,53 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 
   return(empty_tr)
 }
+
+
+# response_probs
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#'
+#' Produces classification probability for the target class, by item or by block.
+#'
+#' @param tr Matrix used to train the model.
+#' @param out_probs Matrix of output probabilities produced by the model.
+#' @param blocks Boolean to toggle block averaged classification probabilities, default is TRUE
+#' @return Vector of classification probabilities for the target class
+#' @export
+
+response_probs <- function(tr, out_probs, blocks = TRUE) {
+  n_trials <- dim(tr)[1]
+  all_cols <- colnames(tr)
+
+  # find the target columns and correct class
+  targets <-
+    substr(all_cols, 1, 1) == 't' &
+      is.finite(
+        suppressWarnings(
+          as.numeric(substr(all_cols, 2, 2))))
+  target_cols <- apply(tr[,targets], 1, which.max)
+
+  # get probability of correct class
+  class_prob <- rep(NA, n_trials)
+  for (i in 1:n_trials) {
+    class_prob[i] <- out_probs[i, target_cols[i]]
+  }
+
+  # get probability averaged for each block
+  if (blocks == TRUE) {
+    tr_comp  <- cbind(tr, class_prob)
+    n_blocks <- max(tr_comp[,'block'])
+    blk_avg <- rep(NA, n_blocks)
+
+    # average for each block
+    for (i in 1:n_blocks) {
+      blk_avg[i] <-
+        mean(tr_comp[tr_comp[,'block'] == i,'class_prob'])
+    }
+    return(blk_avg)
+  }
+  return(class_prob)
+}
+
 
 # tr_add
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
