@@ -1,8 +1,8 @@
 Package: catlearn.suppls
-Title: What the Package Does (one line, title case)
+Title: Catlearn Supplemental Functions
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Garrett", "Honke", email = "ghonke1@binghamton.edu", role = c("aut", "cre"))
+Description: Supplemental functions encompassing the broad cognitive modeling and machine learning efforts of the LaRC lab. Intended for use with the Catlearn R package.
 Depends:
     R (>= 3.2.3)
 License: What license is it under?
