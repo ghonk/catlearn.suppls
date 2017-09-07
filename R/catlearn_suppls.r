@@ -1,5 +1,4 @@
 
-
 # generate_state
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #'
@@ -232,7 +231,7 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 
   feature_cols <- list()
   for(f in 1:n_feats) {
-    feature_cols[[paste0('f', f)]] = feature_type
+    feature_cols[[paste0('x', f)]] = feature_type
   }
 
   target_cols <- list()
@@ -241,9 +240,9 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
   }
 
   other_cols <- list(
-    ctrl = 'integer',
-    trial = 'integer',
-    block = 'integer',
+    ctrl    = 'integer',
+    trial   = 'integer',
+    blk     = 'integer',
     example = 'integer'
   )
 
@@ -293,13 +292,13 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
   # get probability averaged for each block
   if (blocks == TRUE) {
     tr_comp  <- cbind(tr, class_prob)
-    n_blocks <- max(tr_comp[,'block'])
+    n_blocks <- max(tr_comp[,'blk'])
     blk_avg <- rep(NA, n_blocks)
 
     # average for each block
     for (i in 1:n_blocks) {
       blk_avg[i] <-
-        mean(tr_comp[tr_comp[,'block'] == i,'class_prob'])
+        mean(tr_comp[tr_comp[,'blk'] == i,'class_prob'])
     }
     return(blk_avg)
   }
@@ -347,15 +346,15 @@ tr_add <- function(inputs, tr,
 
   # create rows for tr
   rows <- list(
-    ctrl = rep(ctrl, numtrials),
-    trial = 1:numtrials,
-    block = sort(rep(1:blocks, numinputs)),
+    ctrl    = rep(ctrl, numtrials),
+    trial   = 1:numtrials,
+    blk     = sort(rep(1:blocks, numinputs)),
     example = examples
   )
 #
   # add features to rows list
   for(f in 1:numfeatures){
-    rows[[paste0('f', f)]] <- inputs[examples, f]
+    rows[[paste0('x', f)]] <- inputs[examples, f]
   }
 
   # add category labels

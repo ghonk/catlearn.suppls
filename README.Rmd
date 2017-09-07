@@ -97,7 +97,7 @@ response_probs(tr, diva_model$out, blocks = TRUE)
 
 ### Plotting
 
-`plot_training` is a simple function used to plot the learning of a series of models.
+`plot_training` is a simple function used to plot the learning of one or more models.
 
 ```{r}
 # # # run a few models
@@ -111,5 +111,7 @@ model_list_resp_probs <-
 # # # plot the leanrning curves
 plot_training(model_list_resp_probs)
 ```
+
+
 
 
