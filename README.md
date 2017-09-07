@@ -83,12 +83,12 @@ tail(trn_result)
 ```
 
     ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       6 -1 -1  1 -1 -1  1 0.1590 0.8410
-    ## [92,]    0    92    12       4 -1  1  1  1  1 -1 0.8389 0.1611
-    ## [93,]    0    93    12       8  1 -1 -1 -1 -1  1 0.1716 0.8284
-    ## [94,]    0    94    12       1  1  1  1  1  1 -1 0.9360 0.0640
-    ## [95,]    0    95    12       2  1  1 -1  1  1 -1 0.8564 0.1436
-    ## [96,]    0    96    12       7 -1  1 -1 -1 -1  1 0.1154 0.8846
+    ## [91,]    0    91    12       6 -1 -1  1 -1 -1  1 0.0668 0.9332
+    ## [92,]    0    92    12       7 -1  1 -1 -1 -1  1 0.1729 0.8271
+    ## [93,]    0    93    12       5 -1 -1 -1 -1 -1  1 0.0581 0.9419
+    ## [94,]    0    94    12       8  1 -1 -1 -1 -1  1 0.2611 0.7389
+    ## [95,]    0    95    12       3  1 -1  1  1  1 -1 0.8484 0.1516
+    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.8648 0.1352
 
 ### Evaluating performance
 
@@ -98,12 +98,12 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5643582 0.6936080 0.7438706 0.7713369 0.7822231 0.7978918 0.8119429
-    ##  [8] 0.8272332 0.8428917 0.8522970 0.8673757 0.8786071
+    ##  [1] 0.5802214 0.7024412 0.7406033 0.7512773 0.7673849 0.7743643 0.7860335
+    ##  [8] 0.8025324 0.8039298 0.8218126 0.8365848 0.8499758
 
 ### Plotting
 
-`plot_training` is a simple function used to plot the learning of a series of models.
+`plot_training` is a simple function used to plot the learning of one or more models.
 
 ``` r
 # # # run a few models
