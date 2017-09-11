@@ -13,6 +13,7 @@
 #' @param learning_rate Learning rate for weight updates through
 #'     backpropagation
 #' @return List of updated in weights and out weights
+#' @export
 
 .diva.backprop <- function(out_wts, in_wts, out_activation, current_target,
                      hid_activation, hid_activation_raw, ins_w_bias,
@@ -49,6 +50,7 @@
 #' @return List of output unit activation, hidden unit activation, raw
 #'     hidden unit activation and inputs with bias
 #'
+#' @export
 
 .diva.forward_pass <- function(in_wts, out_wts, inputs, continuous) {
     # # # init needed vars
@@ -103,6 +105,7 @@
 #' @param wts_center Scalar value for the center of the weights
 #' @return List with input (input to hidden) weights and output
 #'     weights (hidden to output channels)
+#' @export
 
 .diva.get_wts <- function(num_feats, num_hids, num_cats, wts_range,
                     wts_center) {
@@ -131,6 +134,7 @@
 #' @param inputs Matrix of inputs in format -1 : 1 that need to be
 #'     scaled
 #' @return Matrix of inputs scaled to 0 : 1
+#' @export
 
 .diva.global_scale <- function(inputs) { inputs / 2 + 0.5 }
 
@@ -143,6 +147,7 @@
 #' @param phi Scalar value for response mapping constant (set in st)
 #' @return List of classification probability, focusing weights and
 #'     sum squared error
+#' @export
 
 .diva.response_rule <- function(out_activation, target_activation, beta_val, phi){
     num_feats <- ncol(out_activation)
@@ -210,6 +215,7 @@
 #' 
 #' @param x Matrix of values to be evaluated with sigmoid function
 #' @return Same format of input, evaluated with the sigmoid function
+#' @export
 
 .diva.sigmoid <- function(x) {
     g = 1 / (1 + exp(-x))
@@ -222,6 +228,7 @@
 #' 
 #' @param x Values to be evaluated for the sigmoid gradient
 #' @return Gradient of the sigmoid function for the input
+#' @export
 
 .diva.sigmoid_grad <- function(x) {
     return(g = ((.diva.sigmoid(x)) * (1 - .diva.sigmoid(x))))
@@ -237,6 +244,7 @@
 #'     desired
 #' @return List including a matrix of model classification
 #'     probabilities and list of model's final state
+#' @export
 
 slpDIVAdev <- function(st, tr, xtdo = FALSE) {
     # # # construct weight matrix history list
