@@ -2,7 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{tr_add}
 \alias{tr_add}
-\title{Add trials to an initialized tr object}
+\title{Training Matrix filler}
 \usage{
 tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = NULL,
   shuffle = FALSE, reset = FALSE)
@@ -16,15 +16,20 @@ tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = NULL,
 
 \item{blocks}{Integer number of repetitions. Default 1}
 
-\item{ctrl}{Integer control parameter, applying to all inputs. Default 2}
+\item{ctrl}{Integer control parameter, applying to all inputs. Default 2
+\itemize{
+   \item \code{0} Run model and train
+   \item \code{1} Re-initialize model
+   \item \code{2} Test model (no training)
+   }}
 
 \item{shuffle}{Boolean, shuffle each block. Default FALSE}
 
-\item{reset}{Boolean, reset state on first trial (ctrl=1). Default FALSE}
+\item{reset}{Boolean, reset state on first trial (\code{ctrl=1}). Default FALSE}
 }
 \value{
 An updated dataframe
 }
 \description{
-Add trials to an initialized tr object
+Add trials to an initialized tr object.
 }

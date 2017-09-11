@@ -2,14 +2,25 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{get_test_inputs}
 \alias{get_test_inputs}
-\title{Function to grab inputs that might be useful for model testing}
+\title{Produce model inputs from a set of classic category structures}
 \usage{
 get_test_inputs(target_cats)
 }
 \arguments{
-\item{target_cats}{Variable to choose a category, unifr (unfr1 and unfr2
-for autoencoder), type# (Shepard, Hovland and Jenkin's elemental
-types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)}
+\item{target_cats}{String corresponding to category structure label
+\itemize{
+    \item \code{unifr} Unidimensional rule plus family resemblance structure
+    \item \code{unfr1}, \code{unfr2}
+    \item \code{type1}, \code{type2}, \code{typeN}... Shepard, Hovland and Jenkin's elemental types
+    \item \code{multiclass} 4 class problem built from SHJ Type II
+    }}
+}
+\value{
+A list of inputs and labels
+\itemize{
+    \item \code{ins} Inputs for selected category structure
+    \item \code{labels} Labels for selected category structure
+    }
 }
 \description{
 Function to grab inputs that might be useful for model testing

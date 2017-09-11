@@ -1,7 +1,10 @@
 
-# generate_state
+
+
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Construct DIVA state list
 #'
+#' @description
 #' Construct the state list
 #'
 #' @param input Complete matrix of inputs for training
@@ -16,7 +19,7 @@
 #' @param beta_val Scalar value for the beta parameter
 #' @param phi Scalar value for response mapping (Default = 1, meaning no effect)
 #' @param model_seed Scalar value to set the random seed
-#' @return List of the model hyperparameters and weights (by request)
+#' @return List of the model hyperparameters and weights
 #' @export
 
 generate_state <- function(input, categories, colskip, continuous, make_wts,
@@ -53,14 +56,24 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 
 }
 
-# get_test_inputs
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Produce model inputs from a set of classic category structures
 #'
+#' @description
 #' Function to grab inputs that might be useful for model testing
 #'
-#' @param target_cats Variable to choose a category, unifr (unfr1 and unfr2
-#'     for autoencoder), type# (Shepard, Hovland and Jenkin's elemental
-#'     types, e.g., type2, type 3, ...), multiclass (4 class problem, shj type 2)
+#' @param target_cats String corresponding to category structure label
+#' \itemize{
+#'     \item \code{unifr} Unidimensional rule plus family resemblance structure
+#'     \item \code{unfr1}, \code{unfr2}
+#'     \item \code{type1}, \code{type2}, \code{typeN}... Shepard, Hovland and Jenkin's elemental types
+#'     \item \code{multiclass} 4 class problem built from SHJ Type II
+#'     }
+#' @return A list of inputs and labels
+#' \itemize{
+#'     \item \code{ins} Inputs for selected category structure
+#'     \item \code{labels} Labels for selected category structure
+#'     }
 #' @export
 
 get_test_inputs <- function(target_cats){
@@ -174,9 +187,10 @@ get_test_inputs <- function(target_cats){
   return(target_cat)
 }
 
-# plot_training
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Plot Training
 #'
+#' @description
 #' Plots the training curve for N models.
 #'
 #' @param model_list List of model response probabilities across training blocks
@@ -217,9 +231,10 @@ plot_training <- function(model_list, model_names = NULL) {
     col = line_cols, cex = 0.75)
 }
 
-# tr_init
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Initialize training matrix
 #'
+#' @description
 #' Initialize a tr object
 #'
 #' @param n_feats Number of features (integer, > 0)
@@ -260,9 +275,11 @@ tr_init <- function(n_feats, n_cats, feature_type = 'numeric') {
 }
 
 
-# response_probs
+
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Response Probabilities
 #'
+#' @description
 #' Produces classification probability for the target class, by item or by block.
 #'
 #' @param tr Matrix used to train the model.
@@ -306,10 +323,11 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 }
 
 
-# tr_add
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Training Matrix filler
 #'
-#' Add trials to an initialized tr object
+#' @description
+#' Add trials to an initialized tr object.
 #'
 #' @param inputs Matrix of feature values for each item
 #' @param tr Initialized trial object
@@ -317,7 +335,12 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 #' @param blocks Integer number of repetitions. Default 1
 #' @param shuffle Boolean, shuffle each block. Default FALSE
 #' @param ctrl Integer control parameter, applying to all inputs. Default 2
-#' @param reset Boolean, reset state on first trial (ctrl=1). Default FALSE
+#' \itemize{
+#'    \item \code{0} Run model and train
+#'    \item \code{1} Re-initialize model
+#'    \item \code{2} Test model (no training)
+#'    }
+#' @param reset Boolean, reset state on first trial (\code{ctrl=1}). Default FALSE
 #' @return An updated dataframe
 #' @export
 

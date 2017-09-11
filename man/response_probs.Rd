@@ -2,7 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{response_probs}
 \alias{response_probs}
-\title{Produces classification probability for the target class, by item or by block.}
+\title{Response Probabilities}
 \usage{
 response_probs(tr, out_probs, blocks = TRUE)
 }

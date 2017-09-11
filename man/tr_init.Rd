@@ -2,7 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{tr_init}
 \alias{tr_init}
-\title{Initialize a tr object}
+\title{Initialize training matrix}
 \usage{
 tr_init(n_feats, n_cats, feature_type = "numeric")
 }

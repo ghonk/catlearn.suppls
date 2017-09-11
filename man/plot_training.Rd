@@ -2,7 +2,7 @@
 % Please edit documentation in R/catlearn_suppls.r
 \name{plot_training}
 \alias{plot_training}
-\title{Plots the training curve for N models.}
+\title{Plot Training}
 \usage{
 plot_training(model_list, model_names = NULL)
 }
