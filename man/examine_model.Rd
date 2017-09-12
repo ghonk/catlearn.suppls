@@ -7,7 +7,7 @@
 examine_model(st, tr, model)
 }
 \arguments{
-\item{st}{List of initial state of the model (see \code{?slpDIVA})}
+\item{st}{List of initial state of the model}
 
 \item{tr}{Matrix of training or test examples}
 
@@ -15,7 +15,7 @@ examine_model(st, tr, model)
 \itemize{
      \item \code{slpDIVA} DIVA model
      \item \code{slpALCOVE} ALCOVE model
-     \item \code{slpDIVAdev} Developmental DIVA (only functioning option)
+     \item \code{slpDIVAdev} Developmental DIVA (only tested option)
      }}
 }
 \value{
@@ -36,5 +36,6 @@ examine_model(st, tr, model)
      }
 }
 \description{
-Function to examine the parameters of a model across a training or test matrix
+Function to examine the parameters, state and classification probabilites
+of a model across a training or test matrix.
 }
