@@ -6,14 +6,15 @@
 #' @description
 #' Function to examine the parameters of a model across a training or test matrix
 #'
-#'  @param st List of initial state of the model (see \code{?slpDIVA})
-#'  @param tr Matrix of training or test examples
-#'  @param model String indicating which model is to be examined
-#'  \itemize{
-#'      \item \code{"slpDIVA"} DIVA model
-#'      \item \code{"slpALCOVE"} ALCOVE model
+#' @param st List of initial state of the model (see \code{?slpDIVA})
+#' @param tr Matrix of training or test examples
+#' @param model String indicating which model is to be examined
+#' \itemize{
+#'      \item \code{slpDIVA} DIVA model
+#'      \item \code{slpALCOVE} ALCOVE model
+#'      \item \code{slpDIVAdev} Developmental DIVA (only functioning option)
 #'      }
-#'  @return \code{out} List of lists containing trial-by-trial model information containing:
+#' @return \code{out} List of lists for each trial containing trial-by-trial model information including:
 #'  \itemize{
 #'      \item \code{init_wts} List of weights
 #'          \itemize{
@@ -24,7 +25,7 @@
 #'      \item \code{hidden_act} Matrix of hidden unit activation for trial
 #'      \item \code{result} List that contains the model's post-trial state
 #'           \itemize{
-#'               \item \code{st} List of the model's end-trial state (see \code{slpDIVA})
+#'               \item \code{st} List of the model's end-trial state (see \code{?slpDIVA})
 #'               \item \code{out} Vector of respond probabilities
 #'           }
 #'      }
