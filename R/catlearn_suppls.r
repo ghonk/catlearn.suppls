@@ -1,5 +1,79 @@
 
 
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Examine model
+#'
+#' @description
+#' Function to examine the parameters of a model across a training or test matrix
+#'
+#'  @param st List of initial state of the model (see \code{?slpDIVA})
+#'  @param tr Matrix of training or test examples
+#'  @param model String indicating which model is to be examined
+#'  \itemize{
+#'      \item \code{"slpDIVA"} DIVA model
+#'      \item \code{"slpALCOVE"} ALCOVE model
+#'      }
+#'  @return \code{out} List of lists containing trial-by-trial model information containing:
+#'  \itemize{
+#'      \item \code{init_wts} List of weights
+#'          \itemize{
+#'              \item \code{in_wts} Matrix of input to hidden weight (including bias)
+#'              \item \code{out_wts} Array of hidden to output weights (including bias)
+#'          }
+#'      \item \code{inputs} Matrix of complete input information for trial
+#'      \item \code{hidden_act} Matrix of hidden unit activation for trial
+#'      \item \code{result} List that contains the model's post-trial state
+#'           \itemize{
+#'               \item \code{st} List of the model's end-trial state (see \code{slpDIVA})
+#'               \item \code{out} Vector of respond probabilities
+#'           }
+#'      }
+#' @export
+examine_model <- function(st, tr, model) {
+
+  # # # assign model type to general call
+  exam_model <- get(model)
+  # # # get dims
+  train_dims <- dim(tr)
+  # # # initialize list
+  out <- list()
+
+  # # # run model for each training item
+  for (i in 1:train_dims[1]) {
+    # # # initial weights
+    initial_wts <- list(in_wts = st$in_wts, out_wts = st$out_wts)
+    # # # trial inputs
+    inputs <- tr[i, , drop = FALSE]
+    # # # trial result
+    trial_result <- exam_model(st, tr[i, , drop = FALSE])
+
+    # # # save unit activation
+    if (is.null(st$in_wts) == FALSE) {
+      hidden_act <-
+        st$in_wts * c(1, inputs[ , (st$colskip + 1):(st$colskip + st$num_feats)])
+    } else {
+      hidden_act <-
+        trial_result$st$in_wts *
+          c(1, inputs[ , (st$colskip + 1):(st$colskip + st$num_feats)])
+    }
+
+    # # # update weights if training is on
+    st$in_wts  <- trial_result$st$in_wts
+    st$out_wts <- trial_result$st$out_wts
+
+    # # # save information to out list
+    out[[paste0('Trial_', i)]] <-
+      list(initial_wts = initial_wts,
+                inputs = inputs,
+            hidden_act = hidden_act,
+                result = trial_result)
+
+  }
+
+return(out)
+
+}
+
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' @title Construct DIVA state list
