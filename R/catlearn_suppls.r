@@ -1,4 +1,21 @@
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Average Response Probabilities
+#'
+#' @description
+#' Function that takes a list of model response probabilities and averages.
+#'
+#' @param resp_probs_list List of response probability vectors
+#' @return Vector of average response probabilities
+avg_resp_probs <- function(resp_probs_list) {
 
+  # # # reshape resp prob list
+  resp_probs_mat <- matrix(unlist(resp_probs_list),
+    ncol = length(resp_probs_list),
+    nrow = length(resp_probs_list[[1]]))
+
+  # # # average across blocks (rows)
+  return(rowMeans(resp_probs_mat))
+}
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' @title Examine model
@@ -298,57 +315,62 @@ get_test_inputs <- function(target_cats){
 diva_grid_search <- function(param_list, num_inits, input_list, fit_type,
   crit_fit_vector = NULL) {
 
-  require(catlearn)
-  require(catlearn.suppls)
-
   # # # initialize grid search model list
   model_list <- list()
-
-  # # # collect some variables
-  nfeats <- dim(input_list$ins)[2]
-  ncats  <- length(unique(input_list$labels))
 
   # # # continuous? (HACK for now)
   if (length(unique(as.vector(input_list$ins))) <= 3) {cont_data <- FALSE}
 
   # # # basic state frame
-  st <- list(learning_rate = NULL, num_feats = nfeats,
-    num_hids = NULL, num_cats = ncats, beta_val = NULL, phi = 1,
-    continuous = cont_data, in_wts = NULL, out_wts = NULL, wts_range = NULL,
-    wts_center = 0, colskip = 4)
+  st <- generate_state(input = input_list$ins, categories = input_list$labels,
+    colskip = 4, continuous = cont_data, make_wts = FALSE)
 
   # # # initialize training dataframe
-  init_training_mat <- tr_init(n_feats = nfeats, n_cats = ncats,
+  init_training_mat <- tr_init(n_feats = st$num_feats, n_cats = st$num_cats,
     feature_type = 'numeric')
 
   # # # make all combinations of the parameter sets into DF and get dims
   param_df      <- expand.grid(param_list)
-  param_df_dims <- dim(param_matrix)
-  param_names   <- colnames(param_matrix)
+  param_df_dims <- dim(param_df)
+  param_names   <- colnames(param_df)
 
   # # # run models
   for (i in 1:param_df_dims[1]) {
+
+    param_set_list <- list()
 
     # # # assign parameters
     for (j in 1:param_df_dims[2]) {
       st[param_names[j]] <- param_df[i, j]
     }
 
-    # # # generate training sets
+    # # # create list for model inits
+    k_list <- list()
+
+    # # # generate training sets and run
     for (k in 1:num_inits) {
-        # # # construct training matrix
-        tr <- tr_add(input_list$ins, init_training_mat,
-          labels = input_list$labels, blocks = 1, ctrl = 0,
-          shuffle = TRUE, reset = TRUE)
+      # # # construct training matrix
+      tr <- tr_add(input_list$ins, init_training_mat,
+        labels = input_list$labels, blocks = 12, ctrl = 0,
+        shuffle = TRUE, reset = TRUE)
 
-        # # # run model
-        out <- slpDIVA(st, tr)
+      # # # run model
+      out <- slpDIVA(st, tr)
 
-        # # # add result to list
+      # # # add result to list
+      k_list[[k]] <- list()
+      k_list[[k]]$resp_probs <- response_probs(tr, out$out, blocks = TRUE)
+      k_list[[k]]$st         <- out$st
+    }
 
-      }
+    # # # assign outcome to list
+    param_set_list$resp_probs <-
+      avg_resp_probs(lapply(k_list, function(x) x$resp_probs))
+    param_set_list$params    <- param_df[i, ]
+    param_set_list$st        <- lapply(k_list, function(x) x$st)
 
-    # # # combine list of models for parameter setting
+    # # # assign everything to model list
+    model_list[[i]] <- param_set_list
 
   }
 
