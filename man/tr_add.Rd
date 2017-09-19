@@ -4,8 +4,8 @@
 \alias{tr_add}
 \title{Training Matrix filler}
 \usage{
-tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = NULL,
-  shuffle = FALSE, reset = FALSE)
+tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = 2, shuffle = FALSE,
+  reset = FALSE)
 }
 \arguments{
 \item{inputs}{Matrix of feature values for each item}
@@ -25,7 +25,7 @@ tr_add(inputs, tr, labels = NULL, blocks = 1, ctrl = NULL,
 
 \item{shuffle}{Boolean, shuffle each block. Default FALSE}
 
-\item{reset}{Boolean, reset state on first trial (\code{ctrl=1}). Default FALSE}
+\item{reset}{Boolean, reset state on first trial (\code{ctrl = 1}). Default FALSE}
 }
 \value{
 An updated dataframe

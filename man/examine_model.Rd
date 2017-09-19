@@ -19,7 +19,8 @@ examine_model(st, tr, model)
      }}
 }
 \value{
-\code{out} List of lists for each trial containing trial-by-trial model information including:
+\code{out} List of lists for each trial containing trial-by-trial
+model information including:
  \itemize{
      \item \code{init_wts} List of weights
          \itemize{

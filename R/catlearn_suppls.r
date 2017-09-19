@@ -15,7 +15,8 @@
 #'      \item \code{slpALCOVE} ALCOVE model
 #'      \item \code{slpDIVAdev} Developmental DIVA (only tested option)
 #'      }
-#' @return \code{out} List of lists for each trial containing trial-by-trial model information including:
+#' @return \code{out} List of lists for each trial containing trial-by-trial
+#' model information including:
 #'  \itemize{
 #'      \item \code{init_wts} List of weights
 #'          \itemize{
@@ -76,12 +77,13 @@ return(out)
 
 }
 
-
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' @title Construct DIVA state list
 #'
 #' @description
-#' Construct the state list
+#' Construct the state list. The primary use of this function is to construct a
+#' state list with the default DIVA parameters or generate data-appropriate weights
+#' (particularly when the random seed needs to be set).
 #'
 #' @param input Complete matrix of inputs for training
 #' @param categories Vector of category assignment values
@@ -264,6 +266,97 @@ get_test_inputs <- function(target_cats){
 }
 
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title DIVA Grid Search
+#'
+#' @description
+#' Runs a grid search over a set of provided parameters and produces averaged
+#' response probabilities
+#'
+#' @param param_list List of named parameters to be combined and evaluated for
+#'     the DIVA model
+#' @param num_inits Scalar for number of random initializations to be averaged
+#'     across for the response probability calculation of each parameter combination.
+#' @param input_list List of inputs and labels for the grid search
+#'     \itemize{
+#'         \item \code{ins} Matrix of inputs for selected category structure,
+#'             R (stimuli) x C (features)
+#'         \item \code{labels} Vector of labels for selected category structure
+#'             indexed to the input matrx
+#'         }
+#' @param fit_type Character specifying the type of fit that is desired.
+#'     \itemize{
+#'         \item \code{'best'} for the most accurate or best fit
+#'         \item \code{'crit'} for the closest match to a provided vector of
+#'         response probabilities
+#'         }
+#' @param crit_fit_vector Vector of response probabilities for the
+#'     \code{'crit'} procedure.
+#'
+#' @return List consisting of models, response probabilities and best model result.
+#' @export
+
+diva_grid_search <- function(param_list, num_inits, input_list, fit_type,
+  crit_fit_vector = NULL) {
+
+  require(catlearn)
+  require(catlearn.suppls)
+
+  # # # initialize grid search model list
+  model_list <- list()
+
+  # # # collect some variables
+  nfeats <- dim(input_list$ins)[2]
+  ncats  <- length(unique(input_list$labels))
+
+  # # # continuous? (HACK for now)
+  if (length(unique(as.vector(input_list$ins))) <= 3) {cont_data <- FALSE}
+
+  # # # basic state frame
+  st <- list(learning_rate = NULL, num_feats = nfeats,
+    num_hids = NULL, num_cats = ncats, beta_val = NULL, phi = 1,
+    continuous = cont_data, in_wts = NULL, out_wts = NULL, wts_range = NULL,
+    wts_center = 0, colskip = 4)
+
+  # # # initialize training dataframe
+  init_training_mat <- tr_init(n_feats = nfeats, n_cats = ncats,
+    feature_type = 'numeric')
+
+  # # # make all combinations of the parameter sets into DF and get dims
+  param_df      <- expand.grid(param_list)
+  param_df_dims <- dim(param_matrix)
+  param_names   <- colnames(param_matrix)
+
+  # # # run models
+  for (i in 1:param_df_dims[1]) {
+
+    # # # assign parameters
+    for (j in 1:param_df_dims[2]) {
+      st[param_names[j]] <- param_df[i, j]
+    }
+
+    # # # generate training sets
+    for (k in 1:num_inits) {
+        # # # construct training matrix
+        tr <- tr_add(input_list$ins, init_training_mat,
+          labels = input_list$labels, blocks = 1, ctrl = 0,
+          shuffle = TRUE, reset = TRUE)
+
+        # # # run model
+        out <- slpDIVA(st, tr)
+
+        # # # add result to list
+
+      }
+
+    # # # combine list of models for parameter setting
+
+  }
+
+  return(model_list)
+
+}
+
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' @title Plot Training
 #'
 #' @description
@@ -416,14 +509,14 @@ response_probs <- function(tr, out_probs, blocks = TRUE) {
 #'    \item \code{1} Re-initialize model
 #'    \item \code{2} Test model (no training)
 #'    }
-#' @param reset Boolean, reset state on first trial (\code{ctrl=1}). Default FALSE
+#' @param reset Boolean, reset state on first trial (\code{ctrl = 1}). Default FALSE
 #' @return An updated dataframe
 #' @export
 
 tr_add <- function(inputs, tr,
   labels = NULL,
   blocks = 1,
-  ctrl = NULL,
+  ctrl = 2,
   shuffle = FALSE,
   reset = FALSE) {
 

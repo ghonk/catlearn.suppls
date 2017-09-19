@@ -37,5 +37,7 @@ generate_state(input, categories, colskip, continuous, make_wts,
 List of the model hyperparameters and weights
 }
 \description{
-Construct the state list
+Construct the state list. The primary use of this function is to construct a
+state list with the default DIVA parameters or generate data-appropriate weights
+(particularly when the random seed needs to be set).
 }
