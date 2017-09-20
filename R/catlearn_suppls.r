@@ -162,7 +162,8 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
 #' @param target_cats String corresponding to category structure label
 #' \itemize{
 #'     \item \code{unifr} Unidimensional rule plus family resemblance structure
-#'     \item \code{unfr1}, \code{unfr2}
+#'     \item \code{unfr1}, \code{unfr2} UNI-FR (separated for autoencoder modeling)
+#'     \item \code{fr4d} Four-dimensional family resemblance structure
 #'     \item \code{type1}, \code{type2}, \code{typeN}... Shepard, Hovland and Jenkin's elemental types
 #'     \item \code{multiclass} 4 class problem built from SHJ Type II
 #'     }
@@ -201,6 +202,19 @@ get_test_inputs <- function(target_cats){
      -1,  1, -1, -1,
       1, -1, -1, -1), ncol = 4, byrow = TRUE),
       labels = c(1, 1, 1, 1)),
+
+     fr4d = list(ins = matrix(c(
+     -1, -1, -1, -1,
+     -1, -1, -1,  1,
+     -1, -1,  1, -1,
+     -1,  1, -1, -1,
+      1, -1, -1, -1,
+      1,  1,  1,  1,
+      1,  1,  1, -1,
+      1,  1, -1,  1,
+      1, -1,  1,  1,
+     -1,  1,  1,  1),  ncol = 4, byrow = TRUE),
+      labels = c(1, 1, 1, 1, 1, 2, 2, 2, 2, 2)),
 
       type1 = list(ins = matrix(c(
      -1, -1, -1,
@@ -489,6 +503,8 @@ diva_grid_search_par <- function(param_list, num_inits, input_list, fit_type = N
     model_list[[i]] <- param_set_list
 
   }
+
+  # # # name models based on rank (best fit or criterion fit)
 
   return(model_list)
 
