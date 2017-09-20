@@ -4,8 +4,8 @@
 \alias{diva_grid_search}
 \title{DIVA Grid Search}
 \usage{
-diva_grid_search(param_list, num_inits, input_list, fit_type,
-  crit_fit_vector = NULL)
+diva_grid_search(param_list, num_inits, input_list, fit_type = NULL,
+  crit_fit_vector = NULL, state = NULL)
 }
 \arguments{
 \item{param_list}{List of named parameters to be combined and evaluated for
@@ -24,13 +24,17 @@ across for the response probability calculation of each parameter combination.}
 
 \item{fit_type}{Character specifying the type of fit that is desired.
 \itemize{
-    \item \code{'best'} for the most accurate or best fit
+    \item \code{'best'} for the most accurate fit
     \item \code{'crit'} for the closest match to a provided vector of
     response probabilities
     }}
 
 \item{crit_fit_vector}{Vector of response probabilities for the
 \code{'crit'} procedure.}
+
+\item{state}{List of model parameters. Useful for setting parameters that
+are not subject to the grid search. \code{generate_state} is used if
+no state is provided.}
 }
 \value{
 List consisting of models, response probabilities and best model result.

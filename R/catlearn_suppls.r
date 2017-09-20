@@ -6,6 +6,7 @@
 #'
 #' @param resp_probs_list List of response probability vectors
 #' @return Vector of average response probabilities
+#' @export
 avg_resp_probs <- function(resp_probs_list) {
 
   # # # reshape resp prob list
@@ -85,7 +86,7 @@ examine_model <- function(st, tr, model) {
     out[[paste0('Trial_', i)]] <-
       list(initial_wts = initial_wts,
                 inputs = inputs,
-            hidden_act = hidden_act,
+        raw_hidden_act = raw_hidden_act,
                 result = trial_result)
 
   }
@@ -134,7 +135,7 @@ generate_state <- function(input, categories, colskip, continuous, make_wts,
   if (is.null(learning_rate))  learning_rate <- 0.15
   if (is.null(beta_val))       beta_val      <- 0
   if (is.null(phi))            phi           <- 1
-  if (is.null(model_seed))     model_seed    <- runif(1) * 100000 * runif(1)
+  if (!is.null(model_seed))    set.seed(model_seed)
 
   # # # initialize weight matrices
   if (make_wts == TRUE) {
@@ -302,18 +303,21 @@ get_test_inputs <- function(target_cats){
 #'         }
 #' @param fit_type Character specifying the type of fit that is desired.
 #'     \itemize{
-#'         \item \code{'best'} for the most accurate or best fit
+#'         \item \code{'best'} for the most accurate fit
 #'         \item \code{'crit'} for the closest match to a provided vector of
 #'         response probabilities
 #'         }
 #' @param crit_fit_vector Vector of response probabilities for the
 #'     \code{'crit'} procedure.
+#' @param state List of model parameters. Useful for setting parameters that
+#'     are not subject to the grid search. \code{generate_state} is used if
+#'     no state is provided.
 #'
 #' @return List consisting of models, response probabilities and best model result.
 #' @export
 
-diva_grid_search <- function(param_list, num_inits, input_list, fit_type,
-  crit_fit_vector = NULL) {
+diva_grid_search <- function(param_list, num_inits, input_list, fit_type = NULL,
+  crit_fit_vector = NULL, state = NULL) {
 
   # # # initialize grid search model list
   model_list <- list()
@@ -322,8 +326,10 @@ diva_grid_search <- function(param_list, num_inits, input_list, fit_type,
   if (length(unique(as.vector(input_list$ins))) <= 3) {cont_data <- FALSE}
 
   # # # basic state frame
-  st <- generate_state(input = input_list$ins, categories = input_list$labels,
-    colskip = 4, continuous = cont_data, make_wts = FALSE)
+  if (is.null(state)) {
+    st <- generate_state(input = input_list$ins, categories = input_list$labels,
+      colskip = 4, continuous = cont_data, make_wts = FALSE)
+  }
 
   # # # initialize training dataframe
   init_training_mat <- tr_init(n_feats = st$num_feats, n_cats = st$num_cats,
