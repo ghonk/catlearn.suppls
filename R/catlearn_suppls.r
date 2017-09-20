@@ -1,3 +1,4 @@
+
 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 #' @title Average Response Probabilities
 #'
@@ -342,6 +343,115 @@ diva_grid_search <- function(param_list, num_inits, input_list, fit_type = NULL,
 
   # # # run models
   for (i in 1:param_df_dims[1]) {
+
+    param_set_list <- list()
+
+    # # # assign parameters
+    for (j in 1:param_df_dims[2]) {
+      st[param_names[j]] <- param_df[i, j]
+    }
+
+    # # # create list for model inits
+    k_list <- list()
+
+    # # # generate training sets and run
+    for (k in 1:num_inits) {
+      # # # construct training matrix
+      tr <- tr_add(input_list$ins, init_training_mat,
+        labels = input_list$labels, blocks = 12, ctrl = 0,
+        shuffle = TRUE, reset = TRUE)
+
+      # # # run model
+      out <- slpDIVA(st, tr)
+
+      # # # add result to list
+      k_list[[k]] <- list()
+      k_list[[k]]$resp_probs <- response_probs(tr, out$out, blocks = TRUE)
+      k_list[[k]]$st         <- out$st
+    }
+
+    # # # assign outcome to list
+    param_set_list$resp_probs <-
+      avg_resp_probs(lapply(k_list, function(x) x$resp_probs))
+    param_set_list$params    <- param_df[i, ]
+    param_set_list$st        <- lapply(k_list, function(x) x$st)
+
+    # # # assign everything to model list
+    model_list[[i]] <- param_set_list
+
+  }
+
+  return(model_list)
+
+}
+
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#' @title Parallelized DIVA Grid Search
+#'
+#' @description
+#' Runs a grid search over a set of provided parameters and produces averaged
+#' response probabilities
+#'
+#' @param param_list List of named parameters to be combined and evaluated for
+#'     the DIVA model
+#' @param num_inits Scalar for number of random initializations to be averaged
+#'     across for the response probability calculation of each parameter combination.
+#' @param input_list List of inputs and labels for the grid search
+#'     \itemize{
+#'         \item \code{ins} Matrix of inputs for selected category structure,
+#'             R (stimuli) x C (features)
+#'         \item \code{labels} Vector of labels for selected category structure
+#'             indexed to the input matrx
+#'         }
+#' @param fit_type Character specifying the type of fit that is desired.
+#'     \itemize{
+#'         \item \code{'best'} for the most accurate fit
+#'         \item \code{'crit'} for the closest match to a provided vector of
+#'         response probabilities
+#'         }
+#' @param crit_fit_vector Vector of response probabilities for the
+#'     \code{'crit'} procedure.
+#' @param state List of model parameters. Useful for setting parameters that
+#'     are not subject to the grid search. \code{generate_state} is used if
+#'     no state is provided. Use \code{?generate_state} to examine defaults.
+#' @param procs Scalar for number of processors to use in parallelization.
+#'     Defaults to \code{detectCores() - 2}
+#'
+#' @return List consisting of models, response probabilities and best model result.
+#' @export
+diva_grid_search_par <- function(param_list, num_inits, input_list, fit_type = NULL,
+  crit_fit_vector = NULL, state = NULL, procs = NULL) {
+
+  # # # initialize parallelization
+  require(foreach)
+  require(doParallel)
+  if(is.null(procs)) procs <- detectCores() - 2
+  cl <- makeCluster(procs)
+  registerDoParallel(cl)
+
+  # # # initialize grid search model list
+  model_list <- list()
+
+  # # # continuous? (HACK for now)
+  if (length(unique(as.vector(input_list$ins))) <= 3) {cont_data <- FALSE}
+
+  # # # basic state frame
+  if (is.null(state)) {
+    st <- generate_state(input = input_list$ins, categories = input_list$labels,
+      colskip = 4, continuous = cont_data, make_wts = FALSE)
+  }
+
+  # # # initialize training dataframe
+  init_training_mat <- tr_init(n_feats = st$num_feats, n_cats = st$num_cats,
+    feature_type = 'numeric')
+
+  # # # make all combinations of the parameter sets into DF and get dims
+  param_df      <- expand.grid(param_list)
+  param_df_dims <- dim(param_df)
+  param_names   <- colnames(param_df)
+
+  # # # run models
+  model_list <- foreach(i = 1:param_df_dims[1], .packages = c('catlearn', 'catlearn.suppls')) %dopar% {
 
     param_set_list <- list()
 
