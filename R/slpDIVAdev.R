@@ -1,5 +1,5 @@
 
-# # # .diva.backprop
+# # # .divadev.backprop
 #' backpropagate error and update weights
 #'
 #' @param out_wts Matrix of output weights
@@ -15,7 +15,7 @@
 #' @return List of updated in weights and out weights
 #' @export
 
-.diva.backprop <- function(out_wts, in_wts, out_activation, current_target,
+.divadev.backprop <- function(out_wts, in_wts, out_activation, current_target,
                      hid_activation, hid_activation_raw, ins_w_bias,
                      learning_rate){
     # # # calc error on output units
@@ -24,7 +24,7 @@
     # # # calc error on hidden units
     hid_delta <- out_delta %*% t(out_wts)
     hid_delta <- hid_delta[,2:ncol(hid_delta)] *
-        .diva.sigmoid_grad(hid_activation_raw)
+        .divadev.sigmoid_grad(hid_activation_raw)
 
     # # # calc weight changes
     out_delta <- learning_rate * (t(hid_activation) %*% out_delta)
@@ -38,7 +38,7 @@
                 in_wts  = in_wts))
 }
 
-# # # .diva.forward_pass
+# # # .divadevdev.forward_pass
 #' Conducts forward pass
 #'
 #' @param in_wts Matrix of weights from input to hidden layer
@@ -52,7 +52,7 @@
 #'
 #' @export
 
-.diva.forward_pass <- function(in_wts, out_wts, inputs, continuous) {
+.divadev.forward_pass <- function(in_wts, out_wts, inputs, continuous) {
     # # # init needed vars
     num_feats <- ncol(out_wts)
     num_cats  <- dim(out_wts)[3]
@@ -68,7 +68,7 @@
 
     # # # ins to hids propagation
     hid_activation_raw <- ins_w_bias %*% in_wts
-    hid_activation <- .diva.sigmoid(hid_activation_raw)
+    hid_activation <- .divadev.sigmoid(hid_activation_raw)
 
     # # # add bias unit to hid activation
     hid_activation <- cbind(bias_units, hid_activation)
@@ -84,7 +84,7 @@
     }
 
     # # # apply output activation rule
-    if(continuous == FALSE) out_activation <- .diva.sigmoid(out_activation)
+    if(continuous == FALSE) out_activation <- .divadev.sigmoid(out_activation)
 
     return(list(out_activation     = out_activation,
                 hid_activation     = hid_activation,
@@ -92,7 +92,7 @@
                 ins_w_bias         = ins_w_bias))
 }
 
-# # # .diva.get_wts
+# # # .divadev.get_wts
 #' # Generate input and output weights for initialization of DIVA
 #'
 #' @param num_feats Scalar value for the number of features in the
@@ -107,7 +107,7 @@
 #'     weights (hidden to output channels)
 #' @export
 
-.diva.get_wts <- function(num_feats, num_hids, num_cats, wts_range,
+.divadev.get_wts <- function(num_feats, num_hids, num_cats, wts_range,
                     wts_center) {
     # # # set bias
     bias <- 1
@@ -128,7 +128,7 @@
                 out_wts = out_wts))
 }
 
-# # # .diva.global_scale
+# # # .divadev.global_scale
 #' Scale model targets to 0 : 1 values appropriate for sigmoid output unit activation
 #'
 #' @param inputs Matrix of inputs in format -1 : 1 that need to be
@@ -136,9 +136,9 @@
 #' @return Matrix of inputs scaled to 0 : 1
 #' @export
 
-.diva.global_scale <- function(inputs) { inputs / 2 + 0.5 }
+.divadev.global_scale <- function(inputs) { inputs / 2 + 0.5 }
 
-# .diva.response_rule
+# .divadev.response_rule
 #'  convert output activations to classification
 #'
 #' @param out_activation Array of output channel activations
@@ -149,7 +149,7 @@
 #'     sum squared error
 #' @export
 
-.diva.response_rule <- function(out_activation, target_activation, beta_val, phi){
+.divadev.response_rule <- function(out_activation, target_activation, beta_val, phi){
     num_feats <- ncol(out_activation)
     num_cats  <- dim(out_activation)[3]
     num_stims <- nrow(target_activation)
@@ -208,7 +208,7 @@
                 ssqerror = ssqerror))
 }
 
-# .diva.sigmoid
+# .divadev.sigmoid
 # returns sigmoid evaluated element-wise in X
 #'
 #' Returns sigmoid evaluated element-wise in X
@@ -217,7 +217,7 @@
 #' @return Same format of input, evaluated with the sigmoid function
 #' @export
 
-.diva.sigmoid <- function(x) {
+.divadev.sigmoid <- function(x) {
     g = 1 / (1 + exp(-x))
     return(g)
 }
@@ -230,8 +230,8 @@
 #' @return Gradient of the sigmoid function for the input
 #' @export
 
-.diva.sigmoid_grad <- function(x) {
-    return(g = ((.diva.sigmoid(x)) * (1 - .diva.sigmoid(x))))
+.divadev.sigmoid_grad <- function(x) {
+    return(g = ((.divadev.sigmoid(x)) * (1 - .divadev.sigmoid(x))))
 }
 
 # slpDIVA
@@ -252,7 +252,7 @@ slpDIVAdev <- function(st, tr, xtdo = FALSE) {
 
     # # # convert targets to 0/1 for binomial input data ONLY
     targets <- tr[,(st$colskip + 1):(st$colskip + st$num_feats), drop = FALSE]
-    if (st$continuous == FALSE) targets <- .diva.global_scale(targets)
+    if (st$continuous == FALSE) targets <- .divadev.global_scale(targets)
 
     # # # init size parameter variables
     out <- matrix(rep(NA, st$num_cats * dim(tr)[1]),
@@ -277,7 +277,7 @@ slpDIVAdev <- function(st, tr, xtdo = FALSE) {
                 list(in_wts = st$in_wts, out_wts = st$out_wts)
 
             # # # generate new weights
-            wts <- .diva.get_wts(st$num_feats, st$num_hids,
+            wts <- .divadev.get_wts(st$num_feats, st$num_hids,
                                  st$num_cats, st$wts_range,
                                  st$wts_center)
             st$in_wts  <- wts$in_wts
@@ -288,11 +288,11 @@ slpDIVAdev <- function(st, tr, xtdo = FALSE) {
         }
 
         # # # complete forward pass
-        fp <- .diva.forward_pass(st$in_wts, st$out_wts, current_input,
+        fp <- .divadev.forward_pass(st$in_wts, st$out_wts, current_input,
                            st$continuous)
 
         # # # calculate classification probability
-        response <- .diva.response_rule(fp$out_activation, current_target,
+        response <- .divadev.response_rule(fp$out_activation, current_target,
                                   st$beta_val, st$phi)
 
         # # # store classification accuracy
@@ -304,7 +304,7 @@ slpDIVAdev <- function(st, tr, xtdo = FALSE) {
             class_wts        <- st$out_wts[,,current_class]
             class_activation <- fp$out_activation[,,current_class]
 
-            adjusted_wts <- .diva.backprop(class_wts, st$in_wts,
+            adjusted_wts <- .divadev.backprop(class_wts, st$in_wts,
                                      class_activation, current_target,
                                      fp$hid_activation,
                                      fp$hid_activation_raw,

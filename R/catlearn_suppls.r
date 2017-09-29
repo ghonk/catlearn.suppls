@@ -71,10 +71,10 @@ examine_model <- function(st, tr, model) {
 
     # # # save unit activation
     if (is.null(st$in_wts) == FALSE) {
-      hidden_act <-
+      raw_hidden_act <-
         st$in_wts * c(1, inputs[ , (st$colskip + 1):(st$colskip + st$num_feats)])
     } else {
-      hidden_act <-
+      raw_hidden_act <-
         trial_result$st$in_wts *
           c(1, inputs[ , (st$colskip + 1):(st$colskip + st$num_feats)])
     }
