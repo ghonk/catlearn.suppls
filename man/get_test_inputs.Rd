@@ -12,8 +12,10 @@ get_test_inputs(target_cats)
     \item \code{unifr} Unidimensional rule plus family resemblance structure
     \item \code{unfr1}, \code{unfr2} UNI-FR (separated for autoencoder modeling)
     \item \code{fr4d} Four-dimensional family resemblance structure
-    \item \code{mns81_ls} Medin and Schwanenflugel '81 Linearly Separable Structure
-    \item \code{mns81_nls} Medin and Schwanenflugel '81 Non-Linearly Separable Structure
+    \item \code{mns81e1_ls} Medin and Schwanenflugel '81 Experiment 1 Linearly Separable Structure
+    \item \code{mns81e1_nls} Medin and Schwanenflugel '81 Experiment 1 Non-Linearly Separable Structure
+    \item \code{mns81e4_ls} Medin and Schwanenflugel '81 Experiment 4 Linearly Separable Structure
+    \item \code{mns81e4_nls} Medin and Schwanenflugel '81 Experiment 4 Non-Linearly Separable Structure
     \item \code{type1}, \code{type2}, \code{typeN}... Shepard, Hovland and Jenkin's elemental types
     \item \code{multiclass} 4 class problem built from SHJ Type II
     }}
