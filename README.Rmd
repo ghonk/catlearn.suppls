@@ -112,6 +112,10 @@ model_list_resp_probs <-
 plot_training(model_list_resp_probs)
 ```
 
+### Advanced Topics
+
+#### Examining the state of the model across training
+
 
 
 

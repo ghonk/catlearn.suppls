@@ -82,13 +82,13 @@ trn_result <- cbind(tr, round(diva_model$out, 4))
 tail(trn_result)
 ```
 
-    ##       ctrl trial block example f1 f2 f3 f4 t1 t2     o1     o2
-    ## [91,]    0    91    12       6 -1 -1  1 -1 -1  1 0.0668 0.9332
-    ## [92,]    0    92    12       7 -1  1 -1 -1 -1  1 0.1729 0.8271
-    ## [93,]    0    93    12       5 -1 -1 -1 -1 -1  1 0.0581 0.9419
-    ## [94,]    0    94    12       8  1 -1 -1 -1 -1  1 0.2611 0.7389
-    ## [95,]    0    95    12       3  1 -1  1  1  1 -1 0.8484 0.1516
-    ## [96,]    0    96    12       2  1  1 -1  1  1 -1 0.8648 0.1352
+    ##       ctrl trial blk example x1 x2 x3 x4 t1 t2     o1     o2
+    ## [91,]    0    91  12       2  1  1 -1  1  1 -1 1.0000 0.0000
+    ## [92,]    0    92  12       4 -1  1  1  1  1 -1 0.9992 0.0008
+    ## [93,]    0    93  12       3  1 -1  1  1  1 -1 0.9973 0.0027
+    ## [94,]    0    94  12       7 -1  1 -1 -1 -1  1 0.0000 1.0000
+    ## [95,]    0    95  12       8  1 -1 -1 -1 -1  1 0.0005 0.9995
+    ## [96,]    0    96  12       6 -1 -1  1 -1 -1  1 0.0000 1.0000
 
 ### Evaluating performance
 
@@ -98,8 +98,8 @@ Use `response_probs` to extract the response probabilities for the target catego
 response_probs(tr, diva_model$out, blocks = TRUE)
 ```
 
-    ##  [1] 0.5802214 0.7024412 0.7406033 0.7512773 0.7673849 0.7743643 0.7860335
-    ##  [8] 0.8025324 0.8039298 0.8218126 0.8365848 0.8499758
+    ##  [1] 0.7561462 0.9372188 0.9514638 0.9502348 0.9754091 0.9816299 0.9768297
+    ##  [8] 0.9940707 0.9915841 0.9967900 0.9980584 0.9994837
 
 ### Plotting
 
@@ -119,3 +119,7 @@ plot_training(model_list_resp_probs)
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+### Advanced Topics
+
+#### Examining the state of the model across training
